@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>guest@priyanshu: ~</title>
+  <meta name="description" content="Terminal portfolio of Priyanshu, cybersecurity professional." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #05080d;
+      --win: #0a0f16;
+      --bar: #111823;
+      --text: #c9d4e3;
+      --muted: #6b7a8f;
+      --accent: #00e5a0;
+      --accent-2: #38bdf8;
+      --warn: #fbbf24;
+      --err: #f87171;
+      --pink: #f472b6;
+    }
+    body[data-theme="amber"] { --accent: #fbbf24; --accent-2: #fb923c; }
+    body[data-theme="cyan"] { --accent: #22d3ee; --accent-2: #a78bfa; }
+    body[data-theme="red"] { --accent: #f43f5e; --accent-2: #fb923c; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font: 14px/1.6 "JetBrains Mono", ui-monospace, monospace;
+      padding: 16px;
+      display: flex;
+    }
+    .window {
+      flex: 1;
+      display: flex; flex-direction: column;
+      max-width: 1100px; margin: 0 auto; width: 100%;
+      background: var(--win);
+      border: 1px solid #1c2633;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 30px 80px -20px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.02), 0 0 60px -30px var(--accent);
+      position: relative;
+    }
+    .window::after { /* CRT scanlines */
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background: repeating-linear-gradient(0deg, rgba(255,255,255,.018) 0 1px, transparent 1px 3px);
+    }
+    .bar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 14px;
+      background: var(--bar);
+      border-bottom: 1px solid #1c2633;
+      font-size: 12px; color: var(--muted);
+      user-select: none;
+    }
+    .lights { display: flex; gap: 7px; }
+    .lights a, .lights span { width: 12px; height: 12px; border-radius: 50%; display: block; }
+    .lights .r { background: #ff5f57; } .lights .y { background: #febc2e; } .lights .g { background: #28c840; }
+    .bar .title { flex: 1; text-align: center; }
+    .bar .switch { color: var(--muted); text-decoration: none; border: 1px solid #263243; padding: 3px 10px; border-radius: 6px; }
+    .bar .switch:hover { color: var(--accent); border-color: var(--accent); }
+
+    #screen {
+      flex: 1; overflow-y: auto; padding: 18px 20px 28px;
+      scrollbar-width: thin; scrollbar-color: #263243 transparent;
+      cursor: text;
+    }
+    .line { white-space: pre-wrap; word-break: break-word; }
+    .banner { color: var(--accent); line-height: 1.25; font-size: 13px; margin-bottom: 12px; text-shadow: 0 0 12px color-mix(in srgb, var(--accent) 50%, transparent); overflow-x: auto; white-space: pre; }
+    .banner.small { display: none; }
+    @media (max-width: 720px) {
+      body { padding: 0; font-size: 13px; }
+      .window { border-radius: 0; border: 0; }
+      .banner.big { display: none; } .banner.small { display: block; font-size: 11px; }
+      #screen { padding: 14px 12px 24px; }
+      .bar .title { font-size: 11px; }
+    }
+
+    .prompt { color: var(--accent); }
+    .prompt .path { color: var(--accent-2); }
+    .muted { color: var(--muted); }
+    .acc { color: var(--accent); }
+    .acc2 { color: var(--accent-2); }
+    .warn { color: var(--warn); }
+    .err { color: var(--err); }
+    .pink { color: var(--pink); }
+    .b { font-weight: 700; color: #f1f5fb; }
+    a { color: var(--accent-2); }
+    .cmd { color: var(--accent); cursor: pointer; text-decoration: underline dotted; text-underline-offset: 3px; }
+    .cmd:hover { background: color-mix(in srgb, var(--accent) 15%, transparent); }
+    .tag { display: inline-block; color: var(--accent-2); border: 1px solid color-mix(in srgb, var(--accent-2) 40%, transparent); border-radius: 4px; padding: 0 6px; margin: 2px 4px 2px 0; font-size: 12px; }
+    .block { margin: 6px 0 12px; }
+    .grid { display: grid; grid-template-columns: 170px 1fr; gap: 2px 16px; }
+    @media (max-width: 720px) { .grid { grid-template-columns: 1fr; gap: 0; } .grid > .k { margin-top: 6px; } }
+    .k { color: var(--accent-2); }
+    .bullet { padding-left: 18px; text-indent: -18px; }
+    .bullet::before { content: "> "; color: var(--accent); }
+    .bar-meter { color: var(--accent); letter-spacing: -1px; }
+
+    .input-line { display: flex; align-items: baseline; gap: 8px; }
+    .input-line .prompt { white-space: nowrap; }
+    #cmd {
+      flex: 1; min-width: 0;
+      background: transparent; border: 0; outline: 0;
+      color: #f1f5fb; font: inherit; caret-color: var(--accent);
+    }
+    .chips {
+      display: flex; gap: 6px; overflow-x: auto;
+      padding: 8px 12px; border-top: 1px solid #1c2633; background: var(--bar);
+      scrollbar-width: none;
+    }
+    .chips button {
+      flex: none; background: transparent; color: var(--muted);
+      border: 1px solid #263243; border-radius: 6px; padding: 4px 10px;
+      font: 12px "JetBrains Mono", monospace; cursor: pointer;
+    }
+    .chips button:hover { color: var(--accent); border-color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="window">
+    <div class="bar">
+      <div class="lights">
+        <a class="r" href="index.html" title="Exit to start" aria-label="Exit to start"></a>
+        <span class="y"></span><span class="g"></span>
+      </div>
+      <div class="title">guest@priyanshu: ~ — ssh</div>
+      <a class="switch" href="portfolio.html">GUI mode</a>
+    </div>
+    <div id="screen" aria-live="polite">
+      <div id="out"></div>
+      <div class="input-line" id="input-line" hidden>
+        <span class="prompt">guest@priyanshu:<span class="path">~</span>$</span>
+        <input id="cmd" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Terminal command" />
+      </div>
+    </div>
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <script src="assets/data.js"></script>
+  <script>
+    const R = window.RESUME;
+    const out = document.getElementById("out");
+    const screen = document.getElementById("screen");
+    const input = document.getElementById("cmd");
+    const inputLine = document.getElementById("input-line");
+
+    const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    const c = (name, label) => `<span class="cmd" data-cmd="${esc(name)}">${esc(label || name)}</span>`;
+    const tags = (arr) => arr.map((t) => `<span class="tag">${esc(t)}</span>`).join("");
+
+    const BANNER_BIG = "    ____  ____  ______  _____    _   _______ __  ____  __\n   / __ \\/ __ \\/  _/\\ \\/ /   |  / | / / ___// / / / / / /\n  / /_/ / /_/ // /   \\  / /| | /  |/ /\\__ \\/ /_/ / / / / \n / ____/ _, _// /    / / ___ |/ /|  /___/ / __  / /_/ /  \n/_/   /_/ |_/___/   /_/_/  |_/_/ |_//____/_/ /_/\\____/";
+    const BANNER_SMALL = " ___ ___ _____   ___   _  _ ___ _  _ _   _ \n| _ \\ _ \\_ _\\ \\ / /_\\ | \\| / __| || | | | |\n|  _/   /| | \\ V / _ \\| .` \\__ \\ __ | |_| |\n|_| |_|_\\___| |_/_/ \\_\\_|\\_|___/_||_|\\___/";
+
+    function print(html, cls = "line") {
+      const div = document.createElement("div");
+      div.className = cls;
+      div.innerHTML = html;
+      out.appendChild(div);
+      screen.scrollTop = screen.scrollHeight;
+      return div;
+    }
+
+    // ---------- commands ----------
+    const FILES = {
+      "about.txt": "about",
+      "experience.log": "experience",
+      "skills.json": "skills",
+      "projects/": "projects",
+      "certs.txt": "certs",
+      "education.md": "education",
+      "contact.txt": "contact",
+      "resume.pdf": "resume",
+    };
+
+    const commands = {
+      help: {
+        desc: "list available commands",
+        run() {
+          const rows = Object.entries(commands)
+            .filter(([, v]) => !v.hidden)
+            .map(([k, v]) => `<span>${c(k)}</span><span class="muted">${esc(v.desc)}</span>`)
+            .join("");
+          return `<div class="block"><div class="grid">${rows}</div></div>` +
+            `<div class="muted">Tip: <span class="acc">Tab</span> autocompletes, <span class="acc">↑/↓</span> walks history, <span class="acc">Ctrl+L</span> clears. Click any <span class="cmd">underlined</span> command to run it.\nRecruiter? You have root for one command: ${c("sudo hire priyanshu")}</div>`;
+        },
+      },
+      whoami: {
+        desc: "who is behind this shell",
+        run: () =>
+          `<div class="block"><span class="b">${esc(R.name)}</span> <span class="muted">—</span> <span class="acc">${esc(R.title)}</span>\n` +
+          `<span class="muted">loc:</span> ${esc(R.location)}   <span class="muted">current:</span> Info Security Analyst @ Bank of America\n\n` +
+          `${esc(R.tagline)}\n\nTry ${c("about")}, ${c("experience")} or ${c("ls")}.</div>`,
+      },
+      about: {
+        desc: "professional summary",
+        run: () =>
+          `<div class="block">${esc(R.summary)}</div><div class="block grid">` +
+          R.stats.map((s) => `<span class="acc b">${esc(s.value)}</span><span class="muted">${esc(s.label)}</span>`).join("") +
+          `</div>`,
+      },
+      experience: {
+        desc: "work history  (experience <n> for details)",
+        run(args) {
+          const n = parseInt(args[0], 10);
+          if (n >= 1 && n <= R.experience.length) {
+            const e = R.experience[n - 1];
+            return `<div class="block"><span class="b">${esc(e.role)}</span> <span class="muted">@</span> <span class="acc2">${esc(e.company)}</span>\n` +
+              `<span class="muted">${esc(e.period)}</span>\n${tags(e.tags)}\n` +
+              e.points.map((p) => `<div class="bullet">${esc(p)}</div>`).join("") + `</div>`;
+          }
+          return `<div class="block">` + R.experience.map((e, i) =>
+            `<div><span class="muted">[${i + 1}]</span> <span class="warn">${esc(e.period.padEnd(20))}</span> <span class="b">${esc(e.role)}</span> <span class="muted">@ ${esc(e.company)}</span></div>`
+          ).join("") + `</div><div class="muted">Inspect a role: ${R.experience.map((_, i) => c(`experience ${i + 1}`)).join("  ")}</div>`;
+        },
+      },
+      skills: {
+        desc: "technical arsenal",
+        run: () => {
+          const json = R.skills.map((s) =>
+            `  <span class="acc2">"${esc(s.group)}"</span>: [${s.items.map((i) => `<span class="warn">"${esc(i)}"</span>`).join(", ")}]`
+          ).join(",\n");
+          return `<div class="block"><span class="muted">$ cat skills.json</span>\n{\n${json}\n}</div>`;
+        },
+      },
+      projects: {
+        desc: "things I've built",
+        run: () =>
+          `<div class="block">` + R.projects.map((p) =>
+            `<div class="block"><span class="acc">./${esc(p.cmd)} --run</span>  <span class="b">${esc(p.name)}</span>\n${tags(p.tags)}\n` +
+            p.points.map((x) => `<div class="bullet">${esc(x)}</div>`).join("") + `</div>`
+          ).join("") + `</div>`,
+      },
+      certs: {
+        desc: "certifications",
+        run: () =>
+          `<div class="block">` + R.certifications.map((x) =>
+            `<div><span class="acc">[✓]</span> <span class="warn">${esc(x.short.padEnd(6))}</span> ${esc(x.name)} <span class="muted">— ${esc(x.issuer)}</span></div>`
+          ).join("") + `</div><div class="muted">${R.certifications.length} certificates verified.</div>`,
+      },
+      education: {
+        desc: "academic background",
+        run: () =>
+          `<div class="block">` + R.education.map((e) =>
+            `<div class="block"><span class="b">${esc(e.degree)}</span>\n<span class="acc2">${esc(e.school)}</span>  <span class="muted">${esc(e.period)} · ${esc(e.place)}</span></div>`
+          ).join("") + `</div>`,
+      },
+      contact: {
+        desc: "how to reach me",
+        run: () =>
+          `<div class="block grid">` +
+          `<span class="k">email</span><span><a href="mailto:${esc(R.email)}">${esc(R.email)}</a></span>` +
+          `<span class="k">phone</span><span><a href="tel:${esc(R.phone.replace(/-/g, ""))}">${esc(R.phone)}</a></span>` +
+          `<span class="k">linkedin</span><span><a href="${esc(R.linkedin)}" target="_blank" rel="noopener">${esc(R.linkedin.replace("https://www.", ""))}</a></span>` +
+          `<span class="k">location</span><span>${esc(R.location)}</span>` +
+          `<span class="k">resume</span><span>${c("resume", "resume.pdf")}</span>` +
+          `</div>`,
+      },
+      resume: {
+        desc: "download my resume (PDF)",
+        run() {
+          window.open(R.resume, "_blank");
+          return `<span class="acc">[+]</span> Opening <a href="${esc(R.resume)}" target="_blank" rel="noopener">resume.pdf</a> ...`;
+        },
+      },
+      writeups: {
+        desc: "CTF writeups & blog posts",
+        run() {
+          if (!R.writeups.length) {
+            return `<div class="block"><span class="muted">$ ls ~/writeups</span>\n<span class="muted">total 0</span>\n\n` +
+              `<span class="warn">[~]</span> Writeups are being drafted. The first CTF walkthroughs land here soon.\n` +
+              `<span class="muted">Meanwhile, follow along on</span> ${c("linkedin", "LinkedIn")}.</div>`;
+          }
+          return `<div class="block">` + R.writeups.map((w) =>
+            `<div class="block"><span class="warn">${esc(w.date)}</span>  <span class="${w.type === "CTF" ? "pink" : "acc2"}">[${esc(w.type)}]</span> ` +
+            `<a class="b" href="${esc(w.url)}" target="_blank" rel="noopener">${esc(w.title)}</a>\n${tags(w.tags || [])}\n<span class="muted">${esc(w.summary)}</span></div>`
+          ).join("") + `</div>`;
+        },
+      },
+      interests: {
+        desc: "life outside the SOC",
+        run: () => `<div class="block">${R.interests.map((i) => `<span class="pink">♥</span> ${esc(i)}`).join("   ")}</div>`,
+      },
+      ls: {
+        desc: "list files",
+        run: () => Object.keys(FILES).map((f) =>
+          `<span class="cmd ${f.endsWith("/") ? "acc2" : ""}" data-cmd="cat ${esc(f)}">${esc(f)}</span>`).join("   "),
+      },
+      cat: {
+        desc: "read a file  (cat about.txt)",
+        run(args) {
+          const f = args[0];
+          if (!f) return `<span class="err">cat: missing file operand</span>`;
+          const key = FILES[f] || FILES[f + "/"];
+          if (!key) return `<span class="err">cat: ${esc(f)}: No such file or directory</span>`;
+          return commands[key].run([]);
+        },
+      },
+      theme: {
+        desc: "change colors  (green | amber | cyan | red)",
+        run(args) {
+          const t = (args[0] || "").toLowerCase();
+          const ok = ["green", "amber", "cyan", "red"];
+          if (!ok.includes(t)) return `usage: theme ${ok.map((x) => c(`theme ${x}`, x)).join(" | ")}`;
+          document.body.dataset.theme = t === "green" ? "" : t;
+          try { localStorage.setItem("term-theme", t); } catch {}
+          return `<span class="acc">[+]</span> theme set to ${esc(t)}`;
+        },
+      },
+      banner: { desc: "print the banner", run: () => bannerHTML() },
+      history: {
+        desc: "command history",
+        run: () => hist.map((h, i) => `<span class="muted">${String(i + 1).padStart(4)}</span>  ${esc(h)}`).join("\n") || `<span class="muted">(empty)</span>`,
+      },
+      clear: { desc: "clear the screen", run() { out.innerHTML = ""; return null; } },
+      gui: { desc: "switch to the regular portfolio", run() { setTimeout(() => (location.href = "portfolio.html"), 400); return "Launching GUI ..."; } },
+      exit: { desc: "leave the terminal", run() { setTimeout(() => (location.href = "index.html"), 400); return "logout\nConnection to priyanshu closed."; } },
+
+      // hidden / easter eggs
+      cls: { hidden: true, run: () => commands.clear.run() },
+      portfolio: { hidden: true, run: () => commands.gui.run() },
+      hobbies: { hidden: true, run: () => commands.interests.run() },
+      blog: { hidden: true, run: () => commands.writeups.run() },
+      ctf: { hidden: true, run: () => commands.writeups.run() },
+      phone: { hidden: true, run: () => `<a href="tel:${esc(R.phone.replace(/-/g, ""))}">${esc(R.phone)}</a>` },
+      call: { hidden: true, run() { location.href = `tel:${R.phone.replace(/-/g, "")}`; return `Dialing ${esc(R.phone)} ...`; } },
+      email: { hidden: true, run() { location.href = `mailto:${R.email}`; return `Opening mail client for ${esc(R.email)} ...`; } },
+      linkedin: { hidden: true, run() { window.open(R.linkedin, "_blank"); return "Opening LinkedIn ..."; } },
+      pwd: { hidden: true, run: () => "/home/guest" },
+      date: { hidden: true, run: () => esc(new Date().toString()) },
+      echo: { hidden: true, run: (args) => esc(args.join(" ")) },
+      cd: { hidden: true, run: (args) => `<span class="err">cd: ${esc(args[0] || "~")}: Permission denied</span> <span class="muted">(nice try)</span>` },
+      sudo: {
+        hidden: true,
+        run(args) {
+          if (/^hire(\s+priyanshu)?$/i.test(args.join(" "))) { hireSequence(); return null; }
+          return `<span class="err">guest is not in the sudoers file. This incident will be reported.</span>\n<span class="muted">psst... try</span> ${c("sudo hire priyanshu")}`;
+        },
+      },
+      hire: { hidden: true, run: () => `<span class="err">hire: permission denied</span> <span class="muted">— this one needs root. Try</span> ${c("sudo hire priyanshu")}` },
+      sound: {
+        desc: "toggle typing sounds  (sound on | off)",
+        run(args) {
+          const v = (args[0] || "").toLowerCase();
+          soundOn = v === "on" ? true : v === "off" ? false : !soundOn;
+          try { localStorage.setItem("term-sound", soundOn ? "on" : "off"); } catch {}
+          return `<span class="acc">[+]</span> typing sounds ${soundOn ? "enabled" : "disabled"}`;
+        },
+      },
+      rm: { hidden: true, run: () => `<span class="err">rm: refusing to remove '/': protected by a cautious security analyst</span>` },
+      hack: { hidden: true, run: () => fakeScan() },
+      nmap: { hidden: true, run: () => fakeScan() },
+      ping: {
+        hidden: true,
+        run: (args) => {
+          const host = esc(args[0] || "priyanshu");
+          return `PING ${host}: 56 data bytes\n` + [12, 9, 11].map((t, i) => `64 bytes from ${host}: icmp_seq=${i} ttl=64 time=${t}.${i}ms`).join("\n") +
+            `\n<span class="acc">--- ${host} is up and open to opportunities ---</span>`;
+        },
+      },
+    };
+
+    function fakeScan() {
+      return `<span class="muted">Starting Nmap 7.95 against priyanshu</span>\n` +
+        `PORT     STATE  SERVICE\n` +
+        `22/tcp   <span class="acc">open</span>   threat-intel\n` +
+        `80/tcp   <span class="acc">open</span>   vuln-management\n` +
+        `443/tcp  <span class="acc">open</span>   attack-surface-mgmt\n` +
+        `3389/tcp <span class="err">closed</span> laziness\n` +
+        `8080/tcp <span class="acc">open</span>   new-opportunities\n\n` +
+        `<span class="muted">Host appears hireable. Run</span> ${c("contact")}`;
+    }
+
+    // ---------- sudo hire priyanshu ----------
+    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+    async function hireSequence() {
+      inputLine.hidden = true;
+      print(`[sudo] password for guest: <span class="muted">********</span>`);
+      await sleep(700);
+      print(`<span class="acc">[✓]</span> Authorization granted. Welcome, recruiter.`);
+      await sleep(400);
+
+      const steps = [
+        ["Scanning candidate profile", `3+ yrs · ${R.experience.length} roles · ${R.certifications.length} certs`],
+        ["Checking references", "Bank of America, GMR Group"],
+        ["Verifying skills", "EASM · Threat Intel · VM · IR · IAM"],
+        ["Running background check", "clean — only finds vulnerabilities, never causes them"],
+      ];
+      for (const [label, result] of steps) {
+        const row = print(`<span class="muted">[*]</span> ${esc(label)} <span class="bar-meter"></span>`);
+        const meter = row.querySelector(".bar-meter");
+        for (let i = 1; i <= 20; i++) {
+          meter.textContent = "[" + "█".repeat(i) + "░".repeat(20 - i) + "]";
+          if (soundOn) blip(900 + i * 20, 0.015);
+          await sleep(35);
+        }
+        meter.insertAdjacentHTML("afterend", ` <span class="acc">OK</span> <span class="muted">${esc(result)}</span>`);
+        await sleep(200);
+      }
+
+      await sleep(300);
+      print(
+        `<div class="block"><span class="acc" style="font-weight:700; text-shadow: 0 0 10px currentColor">┌──────────────────────────────────────────┐\n` +
+        `│   MATCH FOUND: 100% compatibility        │\n` +
+        `│   Candidate: ${esc(R.name.padEnd(28))}│\n` +
+        `│   Status:    READY TO DEFEND YOUR ORG    │\n` +
+        `└──────────────────────────────────────────┘</span></div>`
+      );
+      if (soundOn) { blip(660, 0.08); setTimeout(() => blip(990, 0.12), 110); }
+      const subject = encodeURIComponent(`Opportunity for ${R.name} (via your portfolio)`);
+      print(`<span class="acc">[+]</span> Next step: <a href="mailto:${esc(R.email)}?subject=${subject}">send the offer letter →</a>  <span class="muted">or</span> ${c("resume", "grab the resume")}`);
+
+      inputLine.hidden = false;
+      input.focus();
+      screen.scrollTop = screen.scrollHeight;
+    }
+
+    // ---------- typing sounds (synthesized, no audio files) ----------
+    let soundOn = true;
+    try { soundOn = localStorage.getItem("term-sound") !== "off"; } catch {}
+    let audio;
+    function ctx() {
+      if (!audio) audio = new (window.AudioContext || window.webkitAudioContext)();
+      if (audio.state === "suspended") audio.resume();
+      return audio;
+    }
+    // Mechanical-key click: a very short filtered noise burst.
+    function keyClick(heavy) {
+      if (!soundOn) return;
+      try {
+        const a = ctx();
+        const len = Math.floor(a.sampleRate * (heavy ? 0.05 : 0.025));
+        const buf = a.createBuffer(1, len, a.sampleRate);
+        const data = buf.getChannelData(0);
+        for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 4);
+        const src = a.createBufferSource();
+        src.buffer = buf;
+        const filter = a.createBiquadFilter();
+        filter.type = "bandpass";
+        filter.frequency.value = (heavy ? 1200 : 2200) + Math.random() * 600;
+        filter.Q.value = 0.9;
+        const gain = a.createGain();
+        gain.gain.value = heavy ? 0.5 : 0.3;
+        src.connect(filter).connect(gain).connect(a.destination);
+        src.start();
+      } catch {}
+    }
+    function blip(freq, dur) {
+      try {
+        const a = ctx();
+        const o = a.createOscillator();
+        const g = a.createGain();
+        o.type = "square";
+        o.frequency.value = freq;
+        g.gain.setValueAtTime(0.04, a.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.0001, a.currentTime + dur);
+        o.connect(g).connect(a.destination);
+        o.start();
+        o.stop(a.currentTime + dur);
+      } catch {}
+    }
+
+    function bannerHTML() {
+      return `<pre class="banner big">${esc(BANNER_BIG)}</pre><pre class="banner small">${esc(BANNER_SMALL)}</pre>`;
+    }
+
+    // ---------- input handling ----------
+    const hist = [];
+    let hIdx = 0;
+
+    function run(raw) {
+      const line = raw.trim();
+      print(`<span class="prompt">guest@priyanshu:<span class="path">~</span>$</span> ${esc(raw)}`);
+      if (!line) return;
+      hist.push(line);
+      hIdx = hist.length;
+
+      const [name, ...args] = line.split(/\s+/);
+      const cmd = commands[name.toLowerCase()];
+      if (!cmd) {
+        const guess = Object.keys(commands).find((k) => !commands[k].hidden && k.startsWith(name.toLowerCase().slice(0, 2)));
+        print(`<span class="err">zsh: command not found: ${esc(name)}</span>` + (guess ? `  <span class="muted">did you mean</span> ${c(guess)}<span class="muted">?</span>` : `  <span class="muted">type</span> ${c("help")}`));
+        return;
+      }
+      const res = cmd.run(args);
+      if (res) print(res);
+    }
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key.length === 1 || e.key === "Enter" || e.key === "Backspace") keyClick(e.key === "Enter");
+      if (e.key === "Enter") {
+        run(input.value);
+        input.value = "";
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        if (hIdx > 0) input.value = hist[--hIdx];
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        hIdx = Math.min(hist.length, hIdx + 1);
+        input.value = hist[hIdx] || "";
+      } else if (e.key === "Tab") {
+        e.preventDefault();
+        const v = input.value;
+        const parts = v.split(/\s+/);
+        if (parts.length === 1) {
+          const m = Object.keys(commands).filter((k) => !commands[k].hidden && k.startsWith(v));
+          if (m.length === 1) input.value = m[0] + " ";
+          else if (m.length > 1) { print(`<span class="prompt">guest@priyanshu:<span class="path">~</span>$</span> ${esc(v)}`); print(m.map((x) => c(x)).join("   ")); }
+        } else if (parts[0] === "cat") {
+          const m = Object.keys(FILES).filter((f) => f.startsWith(parts[1]));
+          if (m.length === 1) input.value = `cat ${m[0]}`;
+          else if (m.length > 1) print(m.join("   "));
+        }
+      } else if (e.key === "l" && e.ctrlKey) {
+        e.preventDefault();
+        out.innerHTML = "";
+      } else if (e.key === "c" && e.ctrlKey && !window.getSelection().toString()) {
+        print(`<span class="prompt">guest@priyanshu:<span class="path">~</span>$</span> ${esc(input.value)}^C`);
+        input.value = "";
+      }
+    });
+
+    // Clicking anywhere focuses the prompt; clicking a command runs it.
+    document.addEventListener("click", (e) => {
+      const t = e.target.closest("[data-cmd]");
+      if (t) { run(t.dataset.cmd); input.focus(); return; }
+      if (!window.getSelection().toString() && !e.target.closest("a")) input.focus();
+    });
+
+    // Quick command chips (handy on phones)
+    const chips = document.getElementById("chips");
+    ["help", "whoami", "about", "experience", "skills", "projects", "certs", "education", "writeups", "contact", "resume", "sudo hire priyanshu", "clear", "gui"].forEach((name) => {
+      const b = document.createElement("button");
+      b.textContent = name;
+      b.dataset.cmd = name;
+      chips.appendChild(b);
+    });
+
+    // ---------- boot sequence ----------
+    try {
+      const t = localStorage.getItem("term-theme");
+      if (t && t !== "green") document.body.dataset.theme = t;
+    } catch {}
+
+    const boot = [
+      `<span class="muted">[    0.000000]</span> Initializing secure shell ...`,
+      `<span class="muted">[    0.041337]</span> Loading modules: <span class="acc">osint</span> <span class="acc">easm</span> <span class="acc">vuln-mgmt</span> <span class="acc">threat-intel</span> <span class="acc">ir</span>`,
+      `<span class="muted">[    0.090210]</span> Verifying 8 certificates ............ <span class="acc">[ OK ]</span>`,
+      `<span class="muted">[    0.133700]</span> Mounting /home/priyanshu ............ <span class="acc">[ OK ]</span>`,
+      `<span class="muted">[    0.200000]</span> Establishing encrypted session ...... <span class="acc">[ OK ]</span>`,
+    ];
+    let skip = false;
+    const finishBoot = () => {
+      if (inputLine.hidden === false) return;
+      out.innerHTML = "";
+      print(bannerHTML());
+      print(`<div class="block">Welcome, guest. You've connected to <span class="b">${esc(R.name)}</span>'s portfolio — <span class="acc">${esc(R.title)}</span>.\n` +
+        `Type ${c("help")} to see available commands, or start with ${c("whoami")}.</div>`);
+      inputLine.hidden = false;
+      input.focus();
+    };
+    document.addEventListener("keydown", () => { skip = true; }, { once: true });
+    document.addEventListener("pointerdown", () => { skip = true; }, { once: true });
+    (async () => {
+      for (const l of boot) {
+        if (skip) break;
+        print(l);
+        await new Promise((r) => setTimeout(r, 260));
+      }
+      if (!skip) await new Promise((r) => setTimeout(r, 400));
+      finishBoot();
+    })();
+  </script>
+</body>
+</html>
