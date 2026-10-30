@@ -3,509 +3,621 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Priyanshu · Cybersecurity Portfolio</title>
+  <title>Priyanshu · Security Briefing</title>
   <meta name="description" content="Priyanshu, cybersecurity professional in Hyderabad. Attack surface management, threat intelligence and vulnerability management." />
-  <meta property="og:title" content="Priyanshu · Cybersecurity Portfolio" />
+  <meta property="og:title" content="Priyanshu · Security Briefing" />
   <meta property="og:description" content="Attack surface management, threat intelligence and vulnerability management." />
   <meta property="og:type" content="website" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #070b12;
-      --panel: rgba(14, 21, 33, 0.78);
-      --panel-solid: #0e1521;
-      --border: rgba(148, 163, 184, 0.12);
-      --text: #e6edf6;
-      --muted: #94a3b8;
-      --accent: #00e5a0;
-      --accent-rgb: 0, 229, 160;
-      --accent-2: #38bdf8;
-      --radius: 16px;
+      --paper: #f3efe6;
+      --paper-2: #e9e3d6;
+      --card: #faf8f3;
+      --ink: #16140f;
+      --ink-2: #3d392f;
+      --muted: #767062;
+      --line: rgba(22, 20, 15, 0.14);
+      --signal: #e2462a;
+      --signal-rgb: 226, 70, 42;
+      --ok: #1d7a52;
+      --serif: "Instrument Serif", Georgia, serif;
+      --sans: "IBM Plex Sans", system-ui, sans-serif;
+      --mono: "IBM Plex Mono", ui-monospace, monospace;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
-      background: radial-gradient(ellipse at 20% -10%, #0f2236 0%, var(--bg) 55%) fixed, var(--bg);
-      color: var(--text);
-      font: 16px/1.65 Inter, system-ui, sans-serif;
+      background-color: var(--paper);
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='.06'/></svg>");
+      color: var(--ink);
+      font: 16px/1.65 var(--sans);
       overflow-x: hidden;
     }
-    #cyber-bg { position: fixed; inset: 0; z-index: 0; opacity: 0.75; }
-    .grid-overlay {
-      position: fixed; inset: 0; z-index: 0; pointer-events: none;
-      background-image:
-        linear-gradient(rgba(56, 189, 248, 0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(56, 189, 248, 0.04) 1px, transparent 1px);
-      background-size: 48px 48px;
-      mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
-    }
-    .page { position: relative; z-index: 1; }
-    .container { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
     a { color: inherit; }
-    .mono { font-family: "JetBrains Mono", monospace; }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+    ::selection { background: var(--signal); color: var(--paper); }
 
-    /* nav */
+    /* ---------- masthead ---------- */
+    .progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 30; background: var(--signal); transform-origin: 0 50%; transform: scaleX(0); }
+    .strip { background: var(--ink); color: var(--paper); font: 500 11px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+    .strip .wrap { display: flex; gap: 24px; align-items: center; height: 34px; overflow: hidden; white-space: nowrap; }
+    .strip .live { display: inline-flex; align-items: center; gap: 8px; color: #ffb4a6; }
+    .strip .live i { width: 7px; height: 7px; border-radius: 50%; background: var(--signal); animation: blink 1.4s infinite; }
+    .strip .sp { flex: 1; }
+    @keyframes blink { 50% { opacity: .25; } }
+    @media (max-width: 640px) { .strip .hide-sm { display: none; } }
+
     nav {
-      position: sticky; top: 0; z-index: 10;
-      backdrop-filter: blur(12px);
-      background: rgba(7, 11, 18, 0.7);
-      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 20;
+      background: rgba(243, 239, 230, 0.86);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
     }
-    nav .container { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; }
-    .logo { font: 700 16px "JetBrains Mono", monospace; text-decoration: none; display: flex; align-items: center; gap: 10px; }
-    .logo .shield { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; background: rgba(var(--accent-rgb), 0.12); color: var(--accent); }
-    .links { display: flex; gap: 24px; list-style: none; }
-    .links a { text-decoration: none; color: var(--muted); font-size: 14px; font-weight: 500; }
-    .links a:hover { color: var(--text); }
-    .term-btn {
-      font: 600 13px "JetBrains Mono", monospace; text-decoration: none;
-      color: var(--accent); border: 1px solid rgba(var(--accent-rgb), 0.4);
-      padding: 7px 12px; border-radius: 8px; white-space: nowrap;
-    }
-    .term-btn:hover { background: rgba(var(--accent-rgb), 0.1); }
-    @media (max-width: 820px) { .links { display: none; } }
+    nav .wrap { display: flex; align-items: center; gap: 28px; height: 60px; }
+    .brand { font: 400 28px/1 var(--serif); text-decoration: none; letter-spacing: -.01em; }
+    .brand em { color: var(--signal); font-style: normal; }
+    .links { display: flex; gap: 22px; list-style: none; margin-left: auto; }
+    .links a { text-decoration: none; font: 500 12px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); padding: 4px 0; border-bottom: 2px solid transparent; transition: border-color .2s, color .2s; }
+    .links a:hover { color: var(--ink); }
+    .links a.active { color: var(--ink); border-color: var(--signal); }
+    .links .n { color: var(--signal); margin-right: 4px; }
+    @media (max-width: 960px) { .links { display: none; } nav .term { margin-left: auto; } }
+    .term { font: 500 12px var(--mono); text-decoration: none; border: 1px solid var(--ink); padding: 7px 12px; border-radius: 999px; white-space: nowrap; transition: background .2s, color .2s; }
+    .term:hover { background: var(--ink); color: var(--paper); }
 
-    /* hero */
-    .hero { min-height: calc(100vh - 64px); display: grid; align-items: center; padding-top: 64px; padding-bottom: 64px; }
-    .hero-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 48px; align-items: center; }
-    @media (max-width: 880px) { .hero-grid { grid-template-columns: 1fr; } .shield-art { display: none; } }
-    .status {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-size: 13px; color: var(--accent);
-      background: rgba(var(--accent-rgb), 0.08); border: 1px solid rgba(var(--accent-rgb), 0.25);
-      padding: 6px 12px; border-radius: 999px;
+    /* ---------- hero with threat map ---------- */
+    .hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
+    #map { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .hero::before { /* keep the text side readable */
+      content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+      background: linear-gradient(90deg, var(--paper) 22%, rgba(243, 239, 230, 0.75) 45%, rgba(243, 239, 230, 0) 70%);
     }
-    .status i { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); animation: pulse 1.8s infinite; }
-    @keyframes pulse { 50% { opacity: .35; } }
-    .hero h1 { margin-top: 20px; font-size: clamp(38px, 6vw, 64px); line-height: 1.05; font-weight: 800; letter-spacing: -0.03em; }
-    .hero h1 small { display: block; margin-top: 8px; font-size: 0.55em; font-weight: 700; color: #cbd5e1; letter-spacing: -0.02em; }
-    .hero h1 .grad { background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .hero .lead { margin-top: 20px; font-size: 19px; color: var(--muted); max-width: 560px; }
-    .cta { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 12px; }
+    @media (max-width: 860px) { .hero::before { background: linear-gradient(180deg, rgba(243, 239, 230, .55) 0%, rgba(243, 239, 230, .9) 45%, var(--paper) 100%); } }
+    .hero-body { position: relative; z-index: 2; min-height: calc(100vh - 94px); display: flex; flex-direction: column; justify-content: center; padding-top: 72px; padding-bottom: 120px; }
+    .kicker { font: 500 12px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; }
+    .kicker b { color: var(--signal); font-weight: 600; }
+    .hero h1 { margin-top: 18px; font: 400 clamp(72px, 14vw, 184px)/.86 var(--serif); letter-spacing: -.035em; }
+    .hero h1 .dot { color: var(--signal); }
+    .hero .lede { margin-top: 18px; font: italic 400 clamp(26px, 3.6vw, 40px)/1.15 var(--serif); max-width: 640px; color: var(--ink-2); }
+    .hero .plain { margin-top: 20px; max-width: 520px; color: var(--ink-2); }
+    .actions { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 12px; }
     .btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 12px 20px; border-radius: 10px; font-weight: 600; font-size: 15px; text-decoration: none;
-      transition: transform .2s, box-shadow .2s, background .2s;
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 13px 22px; border-radius: 999px; text-decoration: none;
+      font: 500 15px var(--sans); border: 1px solid var(--ink); cursor: pointer;
+      transition: transform .2s, background .2s, color .2s;
     }
-    .btn.primary { background: var(--accent); color: #04140e; }
-    .btn.primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px -8px rgba(var(--accent-rgb), 0.6); }
-    .btn.ghost { border: 1px solid var(--border); background: var(--panel); }
-    .btn.ghost:hover { border-color: var(--accent-2); }
+    .btn.solid { background: var(--ink); color: var(--paper); }
+    .btn.solid:hover { background: var(--signal); border-color: var(--signal); }
+    .btn.line { background: transparent; color: var(--ink); }
+    .btn.line:hover { background: var(--ink); color: var(--paper); }
+    .btn:hover { transform: translateY(-2px); }
 
-    .shield-art { position: relative; aspect-ratio: 1; max-width: 400px; justify-self: center; width: 100%; }
-    .shield-art .ring { position: absolute; inset: 0; border-radius: 50%; border: 1px dashed rgba(var(--accent-rgb), 0.3); animation: spin 40s linear infinite; }
-    .shield-art .ring.r2 { inset: 12%; border-style: solid; border-color: rgba(56, 189, 248, 0.2); animation-duration: 25s; animation-direction: reverse; }
-    .shield-art .ring.r3 { inset: 24%; border-color: rgba(var(--accent-rgb), 0.18); animation-duration: 60s; }
-    .shield-art .ring::before { content: ""; position: absolute; top: -5px; left: 50%; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 14px var(--accent); }
-    .shield-art .ring.r2::before { background: var(--accent-2); box-shadow: 0 0 14px var(--accent-2); }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .shield-art svg { position: absolute; inset: 32%; width: 36%; height: 36%; filter: drop-shadow(0 0 24px rgba(var(--accent-rgb), 0.5)); }
-    .scan { position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(from 0deg, rgba(var(--accent-rgb), 0.18), transparent 25%); animation: spin 6s linear infinite; mask-image: radial-gradient(circle, black 60%, transparent 71%); }
-
-    /* sections */
-    section { padding: 88px 0; }
-    .eyebrow { font: 600 13px "JetBrains Mono", monospace; color: var(--accent); letter-spacing: .06em; }
-    h2 { margin-top: 8px; font-size: clamp(28px, 4.5vw, 40px); font-weight: 800; letter-spacing: -0.02em; }
-    .sub { margin-top: 10px; color: var(--muted); max-width: 640px; }
-    .card {
-      background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 24px; backdrop-filter: blur(8px);
-      transition: border-color .25s, transform .25s;
+    .feed {
+      position: absolute; z-index: 2; left: 0; right: 0; bottom: 0;
+      border-top: 1px solid var(--line);
+      background: rgba(243, 239, 230, 0.9);
+      font: 12px var(--mono);
     }
-    .card:hover { border-color: rgba(var(--accent-rgb), 0.35); }
+    .feed .wrap { display: flex; align-items: center; gap: 20px; height: 52px; }
+    .feed .count { white-space: nowrap; }
+    .feed .count b { font: 400 24px var(--serif); color: var(--ok); margin-right: 6px; }
+    .feed .log { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: var(--ink-2); }
+    .feed .log .x { color: var(--signal); }
+    .feed .note { color: var(--muted); white-space: nowrap; }
+    @media (max-width: 760px) { .feed .note { display: none; } }
 
-    .stats { margin-top: 40px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-    @media (max-width: 720px) { .stats { grid-template-columns: repeat(2, 1fr); } }
-    .stat .v { font-size: 32px; font-weight: 800; color: var(--accent); }
-    .stat .l { color: var(--muted); font-size: 14px; }
+    /* ---------- section scaffolding ---------- */
+    section { padding: 112px 0 48px; }
+    .sec-head { display: flex; align-items: baseline; gap: 18px; margin-bottom: 48px; }
+    .sec-head .num { font: 500 13px var(--mono); color: var(--signal); }
+    .sec-head h2 { font: 400 clamp(40px, 6vw, 72px)/1 var(--serif); letter-spacing: -.02em; white-space: nowrap; }
+    .sec-head .rule { flex: 1; height: 1px; background: var(--ink); transform: scaleX(0); transform-origin: left; transition: transform 1.2s cubic-bezier(.2, .7, .1, 1) .2s; align-self: center; }
+    .sec-head .tag { font: 500 11px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+    .sec-head.in .rule { transform: scaleX(1); }
+    @media (max-width: 640px) { .sec-head { gap: 14px; } .sec-head .tag { display: none; } }
 
-    .what { margin-top: 40px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    @media (max-width: 880px) { .what { grid-template-columns: 1fr; } }
-    .what .ic { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: rgba(var(--accent-rgb), 0.1); color: var(--accent); }
-    .what .card:nth-child(2) .ic { background: rgba(56, 189, 248, 0.1); color: var(--accent-2); }
-    .what .card:nth-child(3) .ic { background: rgba(244, 114, 182, 0.1); color: #f472b6; }
-    .what h3 { margin-top: 16px; font-size: 18px; }
-    .what p { margin-top: 6px; color: var(--muted); font-size: 15px; }
+    /* ---------- 01 profile ---------- */
+    .profile { display: grid; grid-template-columns: 1.35fr 1fr; gap: 64px; align-items: start; }
+    @media (max-width: 900px) { .profile { grid-template-columns: 1fr; gap: 48px; } }
+    .statement { font: 400 clamp(30px, 3.6vw, 46px)/1.12 var(--serif); letter-spacing: -.01em; }
+    .statement em { color: var(--signal); }
+    .caps { margin-top: 40px; list-style: none; border-top: 1px solid var(--line); }
+    .caps li { display: grid; grid-template-columns: 56px 1fr; gap: 12px; padding: 22px 0; border-bottom: 1px solid var(--line); }
+    .caps .i { font: 400 34px/1 var(--serif); color: var(--signal); }
+    .caps h3 { font: 600 17px var(--sans); }
+    .caps p { color: var(--ink-2); margin-top: 4px; }
 
-    /* timeline */
-    .timeline { margin-top: 40px; position: relative; padding-left: 28px; }
-    .timeline::before { content: ""; position: absolute; left: 7px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(var(--accent), var(--accent-2), transparent); }
-    .tl-item { position: relative; margin-bottom: 18px; }
-    .tl-item::before { content: ""; position: absolute; left: -27px; top: 26px; width: 14px; height: 14px; border-radius: 50%; background: var(--bg); border: 2px solid var(--accent); }
-    .tl-head { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-    .tl-head h3 { font-size: 18px; }
-    .tl-head .co { color: var(--accent-2); font-weight: 500; font-size: 15px; }
-    .period { font: 13px "JetBrains Mono", monospace; color: var(--muted); white-space: nowrap; }
-    .tl-item p.simple { margin-top: 8px; color: var(--text); }
-    details { margin-top: 12px; }
-    summary { cursor: pointer; color: var(--accent); font-size: 14px; font-weight: 600; list-style: none; }
+    .badge-wrap { perspective: 900px; display: flex; justify-content: center; }
+    .badge {
+      width: 100%; max-width: 360px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 30px 60px -30px rgba(22, 20, 15, .45);
+      overflow: hidden;
+      transform: rotate(2deg);
+      transition: transform .3s ease-out;
+      position: relative;
+    }
+    .badge .slot { width: 64px; height: 10px; border-radius: 6px; background: var(--paper-2); border: 1px solid var(--line); margin: 14px auto 0; }
+    .badge .band { margin-top: 14px; background: var(--signal); color: #fff; font: 600 11px var(--mono); letter-spacing: .16em; text-align: center; padding: 7px 0; }
+    .badge .body { padding: 22px 24px 18px; display: grid; grid-template-columns: 96px 1fr; gap: 18px; align-items: center; }
+    .badge .print {
+      width: 96px; height: 116px; border-radius: 10px;
+      background: repeating-radial-gradient(ellipse at 50% 60%, transparent 0 4px, rgba(22, 20, 15, .16) 4px 5px), var(--paper);
+      display: grid; place-items: center; border: 1px solid var(--line);
+      font: 400 64px/1 var(--serif); color: var(--ink);
+    }
+    .badge .who h3 { font: 400 32px/1 var(--serif); }
+    .badge .who p { font: 12px var(--mono); color: var(--muted); margin-top: 6px; }
+    .badge dl { display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; padding: 0 24px 20px; font: 12px var(--mono); }
+    .badge dt { color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+    .badge dd { color: var(--ink); text-align: right; }
+    .badge .barcode {
+      margin: 0 24px 22px; height: 44px;
+      background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 7px, transparent 7px 9px, var(--ink) 9px 10px, transparent 10px 14px, var(--ink) 14px 17px, transparent 17px 18px);
+    }
+    .badge .holo { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, .55) 45%, transparent 60%); background-size: 250% 100%; background-position: var(--hx, 100%) 0; mix-blend-mode: soft-light; }
+
+    .figures { margin-top: 72px; display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--ink); }
+    .figures div { padding: 22px 20px 0 0; }
+    .figures div + div { padding-left: 20px; border-left: 1px solid var(--line); }
+    .figures b { display: block; font: 400 clamp(44px, 6vw, 72px)/1 var(--serif); letter-spacing: -.02em; }
+    .figures span { font: 12px var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+    @media (max-width: 720px) {
+      .figures { grid-template-columns: 1fr 1fr; }
+      .figures div:nth-child(3) { padding-left: 0; border-left: 0; }
+      .figures div:nth-child(n+3) { margin-top: 20px; }
+    }
+
+    /* ---------- 02 field record ---------- */
+    .ledger { border-top: 1px solid var(--ink); }
+    .rec { display: grid; grid-template-columns: 170px 1.1fr 1.4fr auto; gap: 24px; padding: 28px 0; border-bottom: 1px solid var(--line); align-items: start; transition: background .3s; }
+    .rec:hover { background: linear-gradient(90deg, transparent, rgba(var(--signal-rgb), .05), transparent); }
+    .rec .when { font: 13px/1.5 var(--mono); color: var(--muted); }
+    .rec h3 { font: 400 30px/1.05 var(--serif); }
+    .rec .org { margin-top: 6px; font: 500 14px var(--sans); color: var(--signal); }
+    .rec .plain { color: var(--ink-2); }
+    .declass {
+      font: 500 12px var(--mono); letter-spacing: .06em; text-transform: uppercase;
+      background: none; border: 1px solid var(--ink); border-radius: 999px; padding: 7px 14px; cursor: pointer; color: var(--ink);
+      white-space: nowrap; transition: background .2s, color .2s;
+    }
+    .declass:hover, .rec.open .declass { background: var(--ink); color: var(--paper); }
+    .file { grid-column: 2 / -1; display: none; }
+    .rec.open .file { display: block; }
+    .file .stamp-line { font: 600 11px var(--mono); letter-spacing: .14em; color: var(--ok); margin-bottom: 10px; }
+    .file ul { list-style: none; }
+    .file li { padding: 6px 0 6px 22px; position: relative; color: var(--ink-2); }
+    .file li::before { content: "▪"; position: absolute; left: 0; color: var(--signal); }
+    .redact {
+      background: linear-gradient(var(--ink), var(--ink)) no-repeat right / 100% 100%;
+      -webkit-box-decoration-break: clone; box-decoration-break: clone;
+      color: transparent;
+      transition: background-size .7s cubic-bezier(.7, 0, .2, 1), color .2s;
+      transition-delay: var(--d, 0s);
+    }
+    .rec.revealed .redact { background-size: 0% 100%; color: var(--ink-2); }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+    .tags span { font: 500 11px var(--mono); letter-spacing: .04em; padding: 3px 9px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink-2); background: var(--card); }
+    @media (max-width: 860px) {
+      .rec { grid-template-columns: 1fr; gap: 10px; }
+      .file { grid-column: 1; }
+      .declass { justify-self: start; }
+    }
+
+    /* ---------- 03 toolkit ---------- */
+    .ticker { background: var(--ink); color: var(--paper); overflow: hidden; padding: 18px 0; margin: 0 -2% 56px; transform: rotate(-1deg); }
+    .ticker .track { display: flex; gap: 40px; width: max-content; animation: slide 40s linear infinite; font: 400 30px var(--serif); white-space: nowrap; }
+    .ticker .track span::after { content: "✦"; color: var(--signal); margin-left: 40px; font-size: 18px; vertical-align: middle; }
+    @keyframes slide { to { transform: translateX(-50%); } }
+    .kit { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--ink); }
+    .kit > div { padding: 24px 24px 28px 0; border-bottom: 1px solid var(--line); }
+    .kit > div:not(:nth-child(3n + 1)) { padding-left: 24px; border-left: 1px solid var(--line); }
+    .kit h3 { font: 500 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--signal); }
+    .kit ul { list-style: none; margin-top: 12px; }
+    .kit li { font: 400 22px/1.45 var(--serif); }
+    @media (max-width: 860px) {
+      .kit { grid-template-columns: 1fr 1fr; }
+      .kit > div:not(:nth-child(3n + 1)) { padding-left: 0; border-left: 0; }
+      .kit > div:nth-child(2n) { padding-left: 20px; border-left: 1px solid var(--line); }
+    }
+    @media (max-width: 560px) { .kit { grid-template-columns: 1fr; } .kit > div:nth-child(2n) { padding-left: 0; border-left: 0; } }
+
+    /* ---------- 04 operations ---------- */
+    .ops { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    @media (max-width: 860px) { .ops { grid-template-columns: 1fr; } }
+    .op { display: block; text-decoration: none; background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 32px; position: relative; overflow: hidden; transition: transform .3s, box-shadow .3s; }
+    .op:hover { transform: translateY(-4px); box-shadow: 0 24px 50px -30px rgba(22, 20, 15, .5); }
+    .op .code { font: 500 12px var(--mono); letter-spacing: .1em; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; }
+    .op .code b { color: var(--ok); font-weight: 600; white-space: nowrap; }
+    .op h3 { margin-top: 26px; font: 400 40px/1.02 var(--serif); letter-spacing: -.01em; }
+    .op p { margin-top: 14px; color: var(--ink-2); }
+    .op .big { position: absolute; right: -10px; bottom: -40px; font: 400 200px/1 var(--serif); color: rgba(var(--signal-rgb), .08); pointer-events: none; }
+    details { margin-top: 18px; position: relative; z-index: 1; }
+    summary { cursor: pointer; font: 500 12px var(--mono); letter-spacing: .06em; text-transform: uppercase; list-style: none; color: var(--ink); }
     summary::-webkit-details-marker { display: none; }
-    summary::before { content: "+ "; font-family: "JetBrains Mono", monospace; }
-    details[open] summary::before { content: "− "; }
-    details ul { margin: 10px 0 0 18px; color: var(--muted); font-size: 15px; }
+    summary::after { content: " ↓"; color: var(--signal); }
+    details[open] summary::after { content: " ↑"; }
+    details ul { margin-top: 12px; padding-left: 18px; color: var(--ink-2); }
     details li { margin: 4px 0; }
-    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
-    .chip { font-size: 12px; padding: 3px 10px; border-radius: 999px; background: rgba(56, 189, 248, 0.08); color: var(--accent-2); border: 1px solid rgba(56, 189, 248, 0.2); }
 
-    .two { margin-top: 40px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-    .three { margin-top: 40px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    @media (max-width: 880px) { .three { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 640px) { .two, .three { grid-template-columns: 1fr; } }
-    .skill h3 { font-size: 16px; }
-    .proj h3 { font-size: 20px; }
-    .proj p { margin-top: 8px; color: var(--muted); }
-    .proj .cmdline { font: 13px "JetBrains Mono", monospace; color: var(--accent); }
-
-    .cert { display: flex; gap: 14px; align-items: flex-start; }
-    .cert .badge {
-      flex: none; width: 56px; height: 56px; border-radius: 12px;
-      display: grid; place-items: center; text-align: center;
-      font: 700 11px "JetBrains Mono", monospace; color: var(--accent);
-      background: rgba(var(--accent-rgb), 0.08); border: 1px solid rgba(var(--accent-rgb), 0.25);
+    /* ---------- 05 clearances ---------- */
+    .stamps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px 24px; }
+    @media (max-width: 960px) { .stamps { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .stamps { grid-template-columns: 1fr; } }
+    .stamp { text-align: center; }
+    .stamp .seal {
+      display: inline-grid; place-items: center;
+      width: 132px; height: 132px; border-radius: 50%;
+      border: 3px solid var(--signal); color: var(--signal);
+      box-shadow: inset 0 0 0 5px var(--paper), inset 0 0 0 6px var(--signal);
+      font: 600 18px var(--mono); letter-spacing: .04em;
+      transform: rotate(var(--r)) scale(1.8); opacity: 0;
+      transition: transform .45s cubic-bezier(.3, 1.6, .5, 1), opacity .2s;
+      transition-delay: var(--d, 0s);
     }
-    .cert h3 { font-size: 15px; line-height: 1.35; }
-    .cert p { color: var(--muted); font-size: 13px; margin-top: 2px; }
+    .stamp .seal small { display: block; font: 500 9px var(--mono); letter-spacing: .16em; margin-top: 2px; }
+    .stamp.in .seal { transform: rotate(var(--r)) scale(1); opacity: .92; }
+    .stamp h3 { margin-top: 16px; font: 400 21px/1.2 var(--serif); }
+    .stamp p { font: 12px var(--mono); color: var(--muted); margin-top: 4px; }
 
-    .edu h3 { font-size: 17px; }
-    .edu p { color: var(--muted); font-size: 15px; }
-    .interests { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 10px; }
-    .interests span { padding: 8px 14px; border-radius: 999px; background: var(--panel); border: 1px solid var(--border); font-size: 14px; }
+    /* ---------- 06 notes / 07 background ---------- */
+    .note-card { display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center; background: var(--card); border: 1px dashed var(--ink-2); border-radius: 18px; padding: 36px; }
+    .note-card h3 { font: 400 36px/1.1 var(--serif); }
+    .note-card p { color: var(--ink-2); margin-top: 10px; max-width: 560px; }
+    .note-card .pin { font: 600 11px var(--mono); letter-spacing: .14em; color: var(--signal); border: 2px solid var(--signal); padding: 10px 14px; transform: rotate(-4deg); border-radius: 6px; white-space: nowrap; }
+    @media (max-width: 760px) { .note-card { grid-template-columns: 1fr; padding: 28px; } .note-card .pin { justify-self: start; } }
+    .notes { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    @media (max-width: 760px) { .notes { grid-template-columns: 1fr; } }
 
-    .contact { text-align: center; }
-    .contact .card { max-width: 720px; margin: 40px auto 0; padding: 40px 24px; }
-    .contact .cta { justify-content: center; }
+    .edu { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--ink); }
+    .edu > div { padding: 24px 24px 24px 0; }
+    .edu > div + div { padding-left: 24px; border-left: 1px solid var(--line); }
+    .edu .when { font: 12px var(--mono); color: var(--muted); }
+    .edu h3 { margin-top: 8px; font: 400 30px/1.1 var(--serif); }
+    .edu p { color: var(--ink-2); margin-top: 4px; }
+    @media (max-width: 760px) { .edu { grid-template-columns: 1fr; } .edu > div + div { padding-left: 0; border-left: 0; border-top: 1px solid var(--line); } }
+    .offduty { margin-top: 32px; font: 400 26px/1.4 var(--serif); color: var(--ink-2); }
+    .offduty b { font: 500 12px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--signal); margin-right: 12px; vertical-align: middle; }
 
-    footer { border-top: 1px solid var(--border); padding: 28px 0; color: var(--muted); font-size: 13px; }
-    footer .container { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-    footer .mono { color: var(--accent); }
+    /* ---------- contact ---------- */
+    .contact { background: var(--ink); color: var(--paper); margin-top: 96px; padding: 112px 0 96px; }
+    .contact .sec-head .rule { background: var(--paper); }
+    .contact .sec-head .tag { color: rgba(243, 239, 230, .5); }
+    .contact .big { font: 400 clamp(56px, 10vw, 140px)/.92 var(--serif); letter-spacing: -.03em; }
+    .contact .big em { color: var(--signal); }
+    .contact .lines { margin-top: 56px; display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid rgba(243, 239, 230, .25); }
+    .contact .lines > * { padding: 24px 24px 0 0; text-decoration: none; }
+    .contact .lines > * + * { padding-left: 24px; border-left: 1px solid rgba(243, 239, 230, .15); }
+    .contact .lines span { display: block; font: 500 11px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: rgba(243, 239, 230, .55); }
+    .contact .lines b { display: block; margin-top: 8px; font: 400 clamp(20px, 2.2vw, 28px)/1.2 var(--serif); word-break: break-word; transition: color .2s; }
+    .contact .lines a:hover b { color: var(--signal); }
+    @media (max-width: 760px) { .contact .lines { grid-template-columns: 1fr; } .contact .lines > * + * { padding-left: 0; border-left: 0; } }
+    .contact .btn { border-color: var(--paper); }
+    .contact .btn.solid { background: var(--paper); color: var(--ink); }
+    .contact .btn.solid:hover { background: var(--signal); border-color: var(--signal); color: var(--paper); }
+    .contact .btn.line { color: var(--paper); }
+    .contact .btn.line:hover { background: var(--paper); color: var(--ink); }
 
-    /* scroll effects */
-    .progress { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 20; transform-origin: 0 50%; transform: scaleX(0); background: linear-gradient(90deg, var(--accent), var(--accent-2)); box-shadow: 0 0 10px var(--accent); }
-    .links a { position: relative; transition: color .2s; }
-    .links a.active { color: var(--accent); }
-    .links a.active::after { content: ""; position: absolute; left: 0; right: 0; bottom: -6px; height: 2px; border-radius: 2px; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
-    .timeline::before { transform-origin: top; transform: scaleY(var(--tl, 0)); }
-    .tl-item::before { transition: background .4s, box-shadow .4s; }
-    .tl-item.lit::before { background: var(--accent); box-shadow: 0 0 12px var(--accent); }
-    .shield-art { transition: transform .2s ease-out; will-change: transform; }
-    .card { --mx: 50%; --my: 50%; }
-    .card::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .3s; background: radial-gradient(300px circle at var(--mx) var(--my), rgba(var(--accent-rgb), 0.08), transparent 60%); }
-    .card:hover::after { opacity: 1; }
-    .card { position: relative; }
+    footer { background: var(--ink); color: rgba(243, 239, 230, .55); font: 12px var(--mono); border-top: 1px solid rgba(243, 239, 230, .12); }
+    footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding-top: 22px; padding-bottom: 22px; }
+    footer a { color: var(--paper); }
 
-    .writeup { text-decoration: none; display: block; }
-    .writeup .meta { display: flex; gap: 10px; align-items: center; font: 12px "JetBrains Mono", monospace; color: var(--muted); }
-    .writeup .type { padding: 2px 8px; border-radius: 6px; background: rgba(244, 114, 182, 0.1); color: #f472b6; }
-    .writeup .type.blog { background: rgba(56, 189, 248, 0.1); color: var(--accent-2); }
-    .writeup h3 { margin-top: 10px; font-size: 18px; }
-    .writeup p { margin-top: 6px; color: var(--muted); font-size: 15px; }
-    .empty { margin-top: 40px; display: grid; grid-template-columns: auto 1fr; gap: 20px; align-items: center; }
-    .empty .term { font: 13px/1.7 "JetBrains Mono", monospace; color: var(--muted); background: #05080d; border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; white-space: pre; }
-    .empty .term b { color: var(--accent); font-weight: 600; }
-    @media (max-width: 720px) { .empty { grid-template-columns: 1fr; } }
-
-    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+    /* ---------- reveal ---------- */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity .8s ease, transform .8s cubic-bezier(.2, .7, .1, 1); }
     .reveal.in { opacity: 1; transform: none; }
-    @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } * { animation: none !important; } .timeline::before { transform: none; } }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .reveal, .stamp .seal { opacity: 1 !important; transition: none; }
+      .reveal { transform: none !important; }
+      .stamp .seal { transform: rotate(var(--r)) !important; }
+      .sec-head .rule { transform: none; }
+      .ticker .track { animation: none; }
+      .redact { transition: none; }
+    }
   </style>
 </head>
 <body>
-  <canvas id="cyber-bg" aria-hidden="true"></canvas>
-  <div class="grid-overlay" aria-hidden="true"></div>
-
   <div class="progress" id="progress" aria-hidden="true"></div>
-  <div class="page">
-    <nav>
-      <div class="container">
-        <a href="index.html" class="logo"><span class="shield">⛨</span> priyanshu</a>
-        <ul class="links">
-          <li><a href="#about">About</a></li>
-          <li><a href="#experience">Experience</a></li>
-          <li><a href="#skills">Skills</a></li>
-          <li><a href="#projects">Projects</a></li>
-          <li><a href="#certs">Certifications</a></li>
-          <li><a href="#writeups">Writeups</a></li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
-        <a class="term-btn" href="terminal.html">&gt;_ Terminal</a>
-      </div>
-    </nav>
 
-    <header class="hero container">
-      <div class="hero-grid">
-        <div>
-          <span class="status"><i></i> <span id="current-role"></span></span>
-          <h1>Hi, I'm <span class="grad" id="name"></span>.<small>I keep companies safe online.</small></h1>
-          <p class="lead" id="simple-summary"></p>
-          <div class="cta">
-            <a class="btn primary" href="#contact">Get in touch</a>
-            <a class="btn ghost" id="resume-btn" target="_blank" rel="noopener">Download resume ↓</a>
-          </div>
-        </div>
-        <div class="shield-art" aria-hidden="true">
-          <div class="scan"></div>
-          <div class="ring"></div><div class="ring r2"></div><div class="ring r3"></div>
-          <svg viewBox="0 0 24 24" fill="none" stroke="#00e5a0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3Z" />
-            <rect x="9" y="11" width="6" height="5" rx="1" />
-            <path d="M10 11V9a2 2 0 0 1 4 0v2" />
-          </svg>
-        </div>
-      </div>
-    </header>
-
-    <section id="about">
-      <div class="container">
-        <div class="reveal">
-          <p class="eyebrow">// about me</p>
-          <h2>What I actually do</h2>
-          <p class="sub">Most cyber attacks start with something left exposed. My job is to find those gaps first and make sure they get fixed.</p>
-        </div>
-        <div class="what">
-          <div class="card reveal">
-            <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div>
-            <h3>Find weak spots</h3>
-            <p>I scan everything a company has on the internet to spot forgotten systems, fake look-alike websites and leaked passwords.</p>
-          </div>
-          <div class="card reveal">
-            <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
-            <h3>Watch for threats</h3>
-            <p>I use monitoring tools to catch suspicious activity early and help respond to incidents as they happen.</p>
-          </div>
-          <div class="card reveal">
-            <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-            <h3>Get it fixed</h3>
-            <p>Finding problems is half the job. I work with engineering and business teams to prioritize fixes and confirm they're done.</p>
-          </div>
-        </div>
-        <div class="stats" id="stats"></div>
-      </div>
-    </section>
-
-    <section id="experience">
-      <div class="container">
-        <div class="reveal">
-          <p class="eyebrow">// experience</p>
-          <h2>Where I've worked</h2>
-          <p class="sub">The short version in plain English. Expand any role for the technical details.</p>
-        </div>
-        <div class="timeline" id="timeline"></div>
-      </div>
-    </section>
-
-    <section id="skills">
-      <div class="container">
-        <div class="reveal">
-          <p class="eyebrow">// skills</p>
-          <h2>Tools of the trade</h2>
-        </div>
-        <div class="three" id="skills-grid"></div>
-      </div>
-    </section>
-
-    <section id="projects">
-      <div class="container">
-        <div class="reveal">
-          <p class="eyebrow">// projects</p>
-          <h2>Things I've built</h2>
-        </div>
-        <div class="two" id="projects-grid"></div>
-      </div>
-    </section>
-
-    <section id="certs">
-      <div class="container">
-        <div class="reveal">
-          <p class="eyebrow">// certifications</p>
-          <h2>Certified &amp; verified</h2>
-        </div>
-        <div class="three" id="certs-grid"></div>
-      </div>
-    </section>
-
-    <section id="education">
-      <div class="container">
-        <div class="reveal">
-          <p class="eyebrow">// education &amp; life</p>
-          <h2>Background</h2>
-        </div>
-        <div class="two" id="edu-grid"></div>
-        <div class="interests reveal" id="interests"></div>
-      </div>
-    </section>
-
-    <section id="writeups">
-      <div class="container">
-        <div class="reveal">
-          <p class="eyebrow">// writeups &amp; ctf</p>
-          <h2>Notes from the field</h2>
-          <p class="sub">CTF walkthroughs and short posts on attack surface, threat intel and the bugs worth knowing about.</p>
-        </div>
-        <div class="two" id="writeups-grid"></div>
-      </div>
-    </section>
-
-    <section id="contact" class="contact">
-      <div class="container">
-        <div class="reveal">
-          <p class="eyebrow">// contact</p>
-          <h2>Let's talk security</h2>
-        </div>
-        <div class="card reveal">
-          <p class="sub" style="margin: 0 auto">Hiring, collaborating or just curious whether your company is exposed? My inbox is open.</p>
-          <p class="mono" style="margin-top: 20px; font-size: 18px; word-break: break-all;" id="email-text"></p>
-          <div class="cta">
-            <a class="btn primary" id="email-btn">Email me</a>
-            <button class="btn ghost" id="copy-btn" style="font: inherit; font-weight: 600; color: inherit; cursor: pointer;">Copy email</button>
-            <a class="btn ghost" id="phone-btn"></a>
-            <a class="btn ghost" id="linkedin-btn" target="_blank" rel="noopener">LinkedIn</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <footer>
-      <div class="container">
-        <span>© <span id="year"></span> Priyanshu · <span id="loc"></span></span>
-        <span><span class="mono">●</span> connection secured · prefer a shell? <a href="terminal.html">open terminal</a></span>
-      </div>
-    </footer>
+  <div class="strip">
+    <div class="wrap">
+      <span class="live"><i></i> Briefing open</span>
+      <span class="hide-sm">File Nº PK-0325</span>
+      <span class="hide-sm">Clearance: Public</span>
+      <span class="sp"></span>
+      <span>HYD <span id="clock">--:--:--</span> IST</span>
+    </div>
   </div>
 
+  <nav>
+    <div class="wrap">
+      <a class="brand" href="index.html">Priyanshu<em>.</em></a>
+      <ul class="links">
+        <li><a href="#profile"><span class="n">01</span>Profile</a></li>
+        <li><a href="#record"><span class="n">02</span>Record</a></li>
+        <li><a href="#toolkit"><span class="n">03</span>Toolkit</a></li>
+        <li><a href="#operations"><span class="n">04</span>Operations</a></li>
+        <li><a href="#clearances"><span class="n">05</span>Clearances</a></li>
+        <li><a href="#notes"><span class="n">06</span>Notes</a></li>
+        <li><a href="#contact"><span class="n">08</span>Contact</a></li>
+      </ul>
+      <a class="term" href="terminal.html">&gt;_ terminal mode</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <canvas id="map" aria-hidden="true"></canvas>
+    <div class="wrap hero-body">
+      <p class="kicker"><b>Security briefing</b> <span>—</span> <span id="kicker-role"></span></p>
+      <h1>Priyanshu<span class="dot">.</span></h1>
+      <p class="lede">finds the doors attackers would use, and helps lock them before anyone knocks.</p>
+      <p class="plain" id="simple-summary"></p>
+      <div class="actions">
+        <a class="btn solid" href="#contact">Open a secure line →</a>
+        <a class="btn line" id="resume-btn" target="_blank" rel="noopener">Download dossier (PDF)</a>
+      </div>
+    </div>
+    <div class="feed">
+      <div class="wrap">
+        <span class="count"><b id="blocked">0</b>threats intercepted</span>
+        <span class="log" id="log">Monitoring inbound traffic to Hyderabad…</span>
+        <span class="note">Simulated feed · illustrative only</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="profile">
+      <div class="wrap">
+        <div class="sec-head reveal"><span class="num">01</span><h2>Profile</h2><span class="rule"></span><span class="tag">Subject overview</span></div>
+        <div class="profile">
+          <div>
+            <p class="statement reveal">Most breaches start with something <em>left exposed</em>. A forgotten server, a leaked password, a fake look-alike website. My job is to find it first.</p>
+            <ol class="caps">
+              <li class="reveal"><span class="i">i.</span><div><h3>Find the weak spots</h3><p>I map everything a company shows the internet and flag what attackers could use.</p></div></li>
+              <li class="reveal"><span class="i">ii.</span><div><h3>Watch for threats</h3><p>Monitoring tools help me spot suspicious activity early and respond while it's happening.</p></div></li>
+              <li class="reveal"><span class="i">iii.</span><div><h3>Get it fixed</h3><p>I work with engineering and business teams to prioritise fixes and confirm they're done.</p></div></li>
+            </ol>
+          </div>
+          <div class="badge-wrap reveal">
+            <div class="badge" id="badge">
+              <div class="slot"></div>
+              <div class="band">AUTHORIZED · DEFENDER</div>
+              <div class="body">
+                <div class="print">P</div>
+                <div class="who"><h3 id="badge-name"></h3><p id="badge-role"></p></div>
+              </div>
+              <dl id="badge-fields"></dl>
+              <div class="barcode"></div>
+              <div class="holo"></div>
+            </div>
+          </div>
+        </div>
+        <div class="figures reveal" id="figures"></div>
+      </div>
+    </section>
+
+    <section id="record">
+      <div class="wrap">
+        <div class="sec-head reveal"><span class="num">02</span><h2>Field record</h2><span class="rule"></span><span class="tag">Declassify for details</span></div>
+        <div class="ledger" id="ledger"></div>
+      </div>
+    </section>
+
+    <section id="toolkit">
+      <div class="ticker" aria-hidden="true"><div class="track" id="track"></div></div>
+      <div class="wrap">
+        <div class="sec-head reveal"><span class="num">03</span><h2>Toolkit</h2><span class="rule"></span><span class="tag">Equipment issued</span></div>
+        <div class="kit" id="kit"></div>
+      </div>
+    </section>
+
+    <section id="operations">
+      <div class="wrap">
+        <div class="sec-head reveal"><span class="num">04</span><h2>Operations</h2><span class="rule"></span><span class="tag">Things I've built</span></div>
+        <div class="ops" id="ops"></div>
+      </div>
+    </section>
+
+    <section id="clearances">
+      <div class="wrap">
+        <div class="sec-head reveal"><span class="num">05</span><h2>Clearances</h2><span class="rule"></span><span class="tag">Certified &amp; verified</span></div>
+        <div class="stamps" id="stamps"></div>
+      </div>
+    </section>
+
+    <section id="notes">
+      <div class="wrap">
+        <div class="sec-head reveal"><span class="num">06</span><h2>Field notes</h2><span class="rule"></span><span class="tag">CTF writeups &amp; posts</span></div>
+        <div id="notes-body"></div>
+      </div>
+    </section>
+
+    <section id="background">
+      <div class="wrap">
+        <div class="sec-head reveal"><span class="num">07</span><h2>Background</h2><span class="rule"></span><span class="tag">Training &amp; off duty</span></div>
+        <div class="edu reveal" id="edu"></div>
+        <p class="offduty reveal" id="offduty"></p>
+      </div>
+    </section>
+  </main>
+
+  <section class="contact" id="contact">
+    <div class="wrap">
+      <div class="sec-head reveal"><span class="num">08</span><h2>Contact</h2><span class="rule"></span><span class="tag">Channel encrypted</span></div>
+      <p class="big reveal">Open a <em>secure</em><br />line.</p>
+      <div class="lines reveal">
+        <a id="email-link"><span>Email</span><b id="email-text"></b></a>
+        <a id="phone-link"><span>Phone</span><b id="phone-text"></b></a>
+        <a id="linkedin-link" target="_blank" rel="noopener"><span>LinkedIn</span><b>in/priyanshu12 ↗</b></a>
+      </div>
+      <div class="actions reveal" style="margin-top: 40px">
+        <button class="btn solid" id="copy-btn">Copy email</button>
+        <a class="btn line" id="resume-btn-2" target="_blank" rel="noopener">Download dossier (PDF)</a>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <div class="wrap">
+      <span>© <span id="year"></span> Priyanshu · <span id="loc"></span> · End of briefing</span>
+      <span>Prefer a shell? <a href="terminal.html">Terminal mode →</a></span>
+    </div>
+  </footer>
+
   <script src="assets/data.js"></script>
+  <script src="assets/world.js"></script>
   <script>
     const R = window.RESUME;
     const $ = (id) => document.getElementById(id);
     const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-    const chips = (arr) => `<div class="chips">${arr.map((t) => `<span class="chip">${esc(t)}</span>`).join("")}</div>`;
+    const tags = (arr) => `<div class="tags">${arr.map((t) => `<span>${esc(t)}</span>`).join("")}</div>`;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const current = R.experience[0];
 
-    $("name").textContent = R.name;
-    $("current-role").textContent = `${R.experience[0].role} · ${R.experience[0].company}`;
+    // ---------- content ----------
+    $("kicker-role").textContent = `${current.role}, ${current.company}`;
     $("simple-summary").textContent = R.simpleSummary;
-    $("resume-btn").href = R.resume;
+    $("resume-btn").href = $("resume-btn-2").href = R.resume;
     $("year").textContent = new Date().getFullYear();
     $("loc").textContent = R.location;
+
+    $("badge-name").textContent = R.name;
+    $("badge-role").textContent = current.role;
+    $("badge-fields").innerHTML = [
+      ["Org", current.company],
+      ["Base", R.location],
+      ["In field since", "2022"],
+      ["Clearances", `${R.certifications.length} certs`],
+    ].map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("");
+
+    $("figures").innerHTML = R.stats.map((s) => `<div><b data-count>${esc(s.value)}</b><span>${esc(s.label)}</span></div>`).join("");
+
+    $("ledger").innerHTML = R.experience.map((e, i) => `
+      <article class="rec reveal">
+        <div class="when">${esc(e.period).replace(" – ", " —<br />")}</div>
+        <div><h3>${esc(e.role)}</h3><p class="org">${esc(e.company)}</p></div>
+        <p class="plain">${esc(e.simple)}</p>
+        <button class="declass" aria-expanded="false" aria-controls="file-${i}">Declassify +</button>
+        <div class="file" id="file-${i}">
+          <p class="stamp-line">● DECLASSIFIED · TECHNICAL FILE</p>
+          <ul>${e.points.map((p, j) => `<li><span class="redact" style="--d:${(j * 0.18).toFixed(2)}s">${esc(p)}</span></li>`).join("")}</ul>
+          ${tags(e.tags)}
+        </div>
+      </article>`).join("");
+
+    $("ledger").addEventListener("click", (ev) => {
+      const btn = ev.target.closest(".declass");
+      if (!btn) return;
+      const rec = btn.closest(".rec");
+      const open = !rec.classList.contains("open");
+      rec.classList.toggle("open", open);
+      btn.setAttribute("aria-expanded", open);
+      btn.textContent = open ? "Classify −" : "Declassify +";
+      // Two frames so the file is laid out before the redaction bars animate away.
+      if (open) requestAnimationFrame(() => requestAnimationFrame(() => rec.classList.add("revealed")));
+      else rec.classList.remove("revealed");
+    });
+
+    const allTools = R.skills.flatMap((s) => s.items);
+    $("track").innerHTML = [...allTools, ...allTools].map((t) => `<span>${esc(t)}</span>`).join("");
+    $("kit").innerHTML = R.skills.map((s) => `
+      <div class="reveal"><h3>${esc(s.group)}</h3><ul>${s.items.map((i) => `<li>${esc(i)}</li>`).join("")}</ul></div>`).join("");
+
+    $("ops").innerHTML = R.projects.map((p, i) => `
+      <article class="op reveal">
+        <div class="code"><span>OPERATION ${String(i + 1).padStart(2, "0")} · ${esc(p.cmd.toUpperCase())}</span><b>● COMPLETE</b></div>
+        <h3>${esc(p.name)}</h3>
+        <p>${esc(p.simple)}</p>
+        ${tags(p.tags)}
+        <details><summary>Mission log</summary><ul>${p.points.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></details>
+        <span class="big" aria-hidden="true">${String(i + 1).padStart(2, "0")}</span>
+      </article>`).join("");
+
+    $("stamps").innerHTML = R.certifications.map((c, i) => `
+      <div class="stamp" style="--r:${[-8, 5, -3, 7, -6, 3, -9, 6][i % 8]}deg; --d:${(i % 4) * 0.12}s">
+        <div class="seal"><div>${esc(c.short)}<small>VERIFIED</small></div></div>
+        <h3>${esc(c.name)}</h3>
+        <p>${esc(c.issuer)}</p>
+      </div>`).join("");
+
+    $("notes-body").innerHTML = R.writeups.length
+      ? `<div class="notes">${R.writeups.map((w) => `
+          <a class="op reveal" href="${esc(w.url)}" target="_blank" rel="noopener">
+            <div class="code"><span>${esc(w.type.toUpperCase())} · ${esc(w.date)}</span><b>READ ↗</b></div>
+            <h3>${esc(w.title)}</h3><p>${esc(w.summary)}</p>${tags(w.tags || [])}
+          </a>`).join("")}</div>`
+      : `<div class="note-card reveal">
+          <div><h3>Writeups are being drafted.</h3>
+          <p>CTF walkthroughs and lessons from real attack-surface work are on the way. Follow along on LinkedIn to read them first.</p>
+          <div class="actions" style="margin-top:20px"><a class="btn line" href="${esc(R.linkedin)}" target="_blank" rel="noopener">Follow on LinkedIn ↗</a></div></div>
+          <span class="pin">IN PROGRESS</span>
+        </div>`;
+
+    $("edu").innerHTML = R.education.map((e) => `
+      <div><p class="when">${esc(e.period)} · ${esc(e.place)}</p><h3>${esc(e.degree)}</h3><p>${esc(e.school)}</p></div>`).join("");
+    $("offduty").innerHTML = `<b>Off duty</b>${R.interests.map(esc).join(" · ")}`;
+
+    $("email-link").href = `mailto:${R.email}`;
     $("email-text").textContent = R.email;
-    $("email-btn").href = `mailto:${R.email}`;
-    $("linkedin-btn").href = R.linkedin;
-    $("phone-btn").href = `tel:${R.phone.replace(/-/g, "")}`;
-    $("phone-btn").textContent = `Call ${R.phone}`;
+    $("phone-link").href = `tel:${R.phone.replace(/-/g, "")}`;
+    $("phone-text").textContent = R.phone;
+    $("linkedin-link").href = R.linkedin;
     $("copy-btn").addEventListener("click", async (e) => {
       try { await navigator.clipboard.writeText(R.email); e.target.textContent = "Copied ✓"; }
       catch { e.target.textContent = "Copy failed"; }
       setTimeout(() => (e.target.textContent = "Copy email"), 1800);
     });
 
-    $("stats").innerHTML = R.stats.map((s) =>
-      `<div class="card stat reveal"><div class="v">${esc(s.value)}</div><div class="l">${esc(s.label)}</div></div>`).join("");
+    // ---------- clock ----------
+    const clock = $("clock");
+    const istTime = () => new Date().toLocaleTimeString("en-GB", { timeZone: "Asia/Kolkata", hour12: false });
+    const tick = () => (clock.textContent = istTime());
+    tick(); setInterval(tick, 1000);
 
-    $("timeline").innerHTML = R.experience.map((e) => `
-      <div class="tl-item card reveal">
-        <div class="tl-head">
-          <div><h3>${esc(e.role)}</h3><div class="co">${esc(e.company)}</div></div>
-          <span class="period">${esc(e.period)}</span>
-        </div>
-        <p class="simple">${esc(e.simple)}</p>
-        ${chips(e.tags)}
-        <details><summary>Technical details</summary><ul>${e.points.map((p) => `<li>${esc(p)}</li>`).join("")}</ul></details>
-      </div>`).join("");
-
-    $("skills-grid").innerHTML = R.skills.map((s) =>
-      `<div class="card skill reveal"><h3>${esc(s.group)}</h3>${chips(s.items)}</div>`).join("");
-
-    $("projects-grid").innerHTML = R.projects.map((p) => `
-      <div class="card proj reveal">
-        <div class="cmdline">./${esc(p.cmd)} --run</div>
-        <h3>${esc(p.name)}</h3>
-        <p>${esc(p.simple)}</p>
-        ${chips(p.tags)}
-        <details><summary>How it works</summary><ul>${p.points.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></details>
-      </div>`).join("");
-
-    $("certs-grid").innerHTML = R.certifications.map((c) => `
-      <div class="card cert reveal">
-        <div class="badge">${esc(c.short)}</div>
-        <div><h3>${esc(c.name)}</h3><p>${esc(c.issuer)}</p></div>
-      </div>`).join("");
-
-    $("edu-grid").innerHTML = R.education.map((e) => `
-      <div class="card edu reveal">
-        <span class="period">${esc(e.period)} · ${esc(e.place)}</span>
-        <h3 style="margin-top:6px">${esc(e.degree)}</h3>
-        <p>${esc(e.school)}</p>
-      </div>`).join("");
-
-    $("writeups-grid").outerHTML = R.writeups.length
-      ? `<div class="two">${R.writeups.map((w) => `
-          <a class="card writeup reveal" href="${esc(w.url)}" target="_blank" rel="noopener">
-            <div class="meta"><span class="type ${w.type === "CTF" ? "" : "blog"}">${esc(w.type)}</span><span>${esc(w.date)}</span></div>
-            <h3>${esc(w.title)}</h3>
-            <p>${esc(w.summary)}</p>
-            ${chips(w.tags || [])}
-          </a>`).join("")}</div>`
-      : `<div class="card empty reveal">
-          <div class="term">$ ls ~/writeups\ntotal 0\n$ <b>./publish --soon</b></div>
-          <div><h3 style="font-size:18px">First writeups are on the way</h3>
-          <p style="color:var(--muted);margin-top:6px">I'm writing up CTF challenges and real-world lessons from attack surface work. Follow on LinkedIn to catch them first.</p>
-          <div class="cta" style="margin-top:16px"><a class="btn ghost" href="${esc(R.linkedin)}" target="_blank" rel="noopener">Follow on LinkedIn</a></div></div>
-        </div>`;
-
-    $("interests").innerHTML = `<span style="background:none;border:0;padding-left:0;color:var(--muted)">When I'm offline:</span>` +
-      R.interests.map((i) => `<span>${esc(i)}</span>`).join("");
+    // ---------- badge tilt ----------
+    const badge = $("badge");
+    if (!reduce) {
+      badge.addEventListener("pointermove", (e) => {
+        const b = badge.getBoundingClientRect();
+        const x = (e.clientX - b.left) / b.width - 0.5, y = (e.clientY - b.top) / b.height - 0.5;
+        badge.style.transform = `rotateY(${x * 14}deg) rotateX(${-y * 14}deg)`;
+        badge.style.setProperty("--hx", `${(x + 0.5) * 100}%`);
+      });
+      badge.addEventListener("pointerleave", () => (badge.style.transform = ""));
+    }
 
     // ---------- scroll effects ----------
-    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    // Stagger sibling cards so grids cascade in.
-    document.querySelectorAll(".reveal").forEach((el) => {
-      const sibs = [...el.parentElement.children].filter((x) => x.classList.contains("reveal"));
-      if (sibs.length > 1) el.style.transitionDelay = `${sibs.indexOf(el) * 80}ms`;
-    });
-
-    // Headings "decrypt" from random glyphs into their real text.
-    function scramble(el) {
-      const target = el.textContent;
-      const glyphs = "!<>-_\\/[]{}=+*^?#01ABCDEF";
-      let frame = 0;
-      const total = 22;
-      (function tick() {
-        el.textContent = [...target].map((ch, i) =>
-          ch === " " || frame / total > i / target.length ? ch : glyphs[(Math.random() * glyphs.length) | 0]).join("");
-        if (++frame <= total) requestAnimationFrame(tick);
-        else el.textContent = target;
-      })();
-    }
-
-    // Numbers in stat cards count up; non-numeric ones decrypt.
     function countUp(el) {
       const m = el.textContent.match(/^(\d+)(.*)$/);
-      if (!m) return scramble(el);
+      if (!m) return;
       const end = +m[1], suffix = m[2], start = performance.now();
-      (function tick(now) {
-        const t = Math.min(1, (now - start) / 1200);
+      (function step(now) {
+        const t = Math.min(1, (now - start) / 1400);
         el.textContent = Math.round(end * (1 - Math.pow(1 - t, 3))) + suffix;
-        if (t < 1) requestAnimationFrame(tick);
+        if (t < 1) requestAnimationFrame(step);
       })(start);
     }
+
+    document.querySelectorAll(".kit > .reveal, .ops > .reveal, .caps > .reveal").forEach((el) => {
+      el.style.transitionDelay = `${[...el.parentElement.children].indexOf(el) * 90}ms`;
+    });
 
     const io = new IntersectionObserver((entries) => {
       entries.forEach((en) => {
         if (!en.isIntersecting) return;
-        const el = en.target;
-        el.classList.add("in");
-        if (!reduce) {
-          el.querySelectorAll("h2").forEach(scramble);
-          el.querySelectorAll(".stat .v").forEach(countUp);
-          if (el.matches(".stat")) countUp(el.querySelector(".v"));
-        }
-        io.unobserve(el);
+        en.target.classList.add("in");
+        if (!reduce) en.target.querySelectorAll("[data-count]").forEach(countUp);
+        io.unobserve(en.target);
       });
-    }, { threshold: 0.12 });
-    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+    }, { threshold: 0.15 });
+    document.querySelectorAll(".reveal, .stamp").forEach((el) => io.observe(el));
 
-    // Active nav link follows the section in view.
     const navLinks = [...document.querySelectorAll(".links a")];
     const spy = new IntersectionObserver((entries) => {
       entries.forEach((en) => {
@@ -514,36 +626,185 @@
     }, { rootMargin: "-45% 0px -50% 0px" });
     document.querySelectorAll("section[id]").forEach((s) => spy.observe(s));
 
-    // Progress bar, timeline fill and shield parallax, all driven by scroll.
     const progress = $("progress");
-    const timeline = $("timeline");
-    const tlItems = [...timeline.querySelectorAll(".tl-item")];
-    const shield = document.querySelector(".shield-art");
     let ticking = false;
-    function onScroll() {
-      ticking = false;
-      const y = scrollY, vh = innerHeight;
-      progress.style.transform = `scaleX(${y / (document.documentElement.scrollHeight - vh) || 0})`;
+    addEventListener("scroll", () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        progress.style.transform = `scaleX(${scrollY / (document.documentElement.scrollHeight - innerHeight) || 0})`;
+      });
+    }, { passive: true });
 
-      const r = timeline.getBoundingClientRect();
-      const fill = Math.max(0, Math.min(1, (vh * 0.6 - r.top) / r.height));
-      timeline.style.setProperty("--tl", reduce ? 1 : fill);
-      tlItems.forEach((it) => it.classList.toggle("lit", it.getBoundingClientRect().top + 26 < vh * 0.6));
+    // ---------- threat map ----------
+    // Dotted world map; simulated attacks arc in from around the globe and are
+    // stopped at a shield ring around Hyderabad.
+    (function threatMap() {
+      const W = window.WORLD;
+      const canvas = $("map");
+      const ctx = canvas.getContext("2d");
+      const HOME = { lon: 78.47, lat: 17.38 };
+      const LAT_PER_ROW = (W.lat0 - W.lat1) / W.rows;
+      const LON_PER_COL = 360 / W.cols;
+      const SHIELD = 22;
+      const land = [];
+      W.grid.forEach((hex, r) => {
+        const bits = BigInt("0x" + hex).toString(2).padStart(W.cols, "0");
+        for (let c = 0; c < W.cols; c++) if (bits[c] === "1") land.push({ c, r });
+      });
 
-      if (shield && !reduce) shield.style.transform = `translateY(${y * 0.25}px) rotate(${y * 0.02}deg)`;
-    }
-    addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
-    onScroll();
+      const TYPES = ["Phishing domain", "Credential stuffing", "Port scan", "Exposed bucket probe", "C2 beacon", "SSH brute force", "Typosquat domain", "Leaked credential reuse"];
+      const region = (lon, lat) =>
+        lon < -30 ? (lat > 15 ? "North America" : "South America")
+        : lon < 45 ? (lat > 36 ? "Europe" : "Africa")
+        : lon < 65 && lat > 12 ? "Middle East"
+        : lat < -10 && lon > 110 ? "Oceania"
+        : "Asia-Pacific";
 
-    // Cards glow where the cursor is.
-    document.addEventListener("pointermove", (e) => {
-      const card = e.target.closest(".card");
-      if (!card) return;
-      const b = card.getBoundingClientRect();
-      card.style.setProperty("--mx", `${e.clientX - b.left}px`);
-      card.style.setProperty("--my", `${e.clientY - b.top}px`);
-    });
+      let w, h, cell, cellH, ox, oy, home, dots;
+      let attacks = [], ripples = [], blocked = 0, last = 0, visible = true;
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      const logEl = $("log"), countEl = $("blocked");
+
+      const project = (lon, lat) => ({
+        x: ox + ((lon + 180) / 360) * W.cols * cell,
+        y: oy + ((W.lat0 - lat) / (W.lat0 - W.lat1)) * W.rows * cellH,
+      });
+
+      function layout() {
+        w = canvas.clientWidth; h = canvas.clientHeight;
+        canvas.width = w * dpr; canvas.height = h * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        const ratio = LAT_PER_ROW / LON_PER_COL;
+        const wide = w > 860;
+        cell = Math.max(w / W.cols, (h * 0.92) / (W.rows * ratio));
+        if (wide) cell = Math.max(cell, (w * 1.1) / W.cols);
+        cellH = cell * ratio;
+        // Keep Hyderabad right of the headline on wide screens, centered-right on narrow ones.
+        const hx = ((HOME.lon + 180) / 360) * W.cols * cell;
+        const hy = ((W.lat0 - HOME.lat) / (W.lat0 - W.lat1)) * W.rows * cellH;
+        ox = (wide ? w * 0.72 : w * 0.62) - hx;
+        oy = (wide ? h * 0.46 : h * 0.2) - hy;
+        home = project(HOME.lon, HOME.lat);
+
+        dots = document.createElement("canvas");
+        dots.width = w * dpr; dots.height = h * dpr;
+        const d = dots.getContext("2d");
+        d.setTransform(dpr, 0, 0, dpr, 0, 0);
+        d.fillStyle = "rgba(22, 20, 15, 0.26)";
+        const rad = Math.max(1, cell * 0.17);
+        for (const p of land) {
+          const x = ox + (p.c + 0.5) * cell, y = oy + (p.r + 0.5) * cellH;
+          if (x < -cell || x > w + cell || y < -cell || y > h + cell) continue;
+          d.beginPath(); d.arc(x, y, rad, 0, Math.PI * 2); d.fill();
+        }
+      }
+
+      function launch() {
+        let p, lon, lat, tries = 0;
+        do {
+          p = land[(Math.random() * land.length) | 0];
+          lon = -180 + (p.c + 0.5) * LON_PER_COL;
+          lat = W.lat0 - (p.r + 0.5) * LAT_PER_ROW;
+          tries++;
+        } while (Math.abs(lon - HOME.lon) + Math.abs(lat - HOME.lat) < 35 && tries < 20);
+        const from = project(lon, lat);
+        const dist = Math.hypot(home.x - from.x, home.y - from.y);
+        attacks.push({
+          from, dist,
+          ctrl: { x: (from.x + home.x) / 2, y: Math.min(from.y, home.y) - dist * 0.35 },
+          stopT: 1 - (SHIELD / Math.max(dist, SHIELD + 1)) * 0.9, // where the arc meets the shield
+          t: 0, speed: 0.006 + Math.random() * 0.006,
+          type: TYPES[(Math.random() * TYPES.length) | 0],
+          origin: region(lon, lat),
+        });
+      }
+
+      const at = (a, t) => {
+        const u = 1 - t;
+        return { x: u * u * a.from.x + 2 * u * t * a.ctrl.x + t * t * home.x, y: u * u * a.from.y + 2 * u * t * a.ctrl.y + t * t * home.y };
+      };
+
+      function drawHome() {
+        ctx.fillStyle = "#16140f";
+        ctx.beginPath(); ctx.arc(home.x, home.y, 4, 0, Math.PI * 2); ctx.fill();
+        ctx.font = "500 11px 'IBM Plex Mono', monospace";
+        ctx.fillText("HYDERABAD · PROTECTED", home.x + SHIELD + 8, home.y + 4);
+      }
+
+      function frame(now) {
+        if (!visible) return;
+        ctx.clearRect(0, 0, w, h);
+        ctx.drawImage(dots, 0, 0, w, h);
+
+        if (now - last > 650) { launch(); last = now; }
+
+        for (const a of attacks) {
+          a.t += a.speed;
+          const headT = Math.min(a.t, a.stopT);
+          const tailT = Math.max(0, Math.min(a.t, a.stopT + 0.3) - 0.28);
+          if (tailT < headT) {
+            ctx.beginPath();
+            for (let s = 0; s <= 24; s++) {
+              const p = at(a, tailT + ((headT - tailT) * s) / 24);
+              s ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y);
+            }
+            const tail = at(a, tailT), head = at(a, headT);
+            const grad = ctx.createLinearGradient(tail.x, tail.y, head.x, head.y);
+            grad.addColorStop(0, "rgba(226, 70, 42, 0)");
+            grad.addColorStop(1, "rgba(226, 70, 42, 0.9)");
+            ctx.strokeStyle = grad; ctx.lineWidth = 1.6; ctx.stroke();
+            if (!a.done) {
+              ctx.fillStyle = "#e2462a";
+              ctx.beginPath(); ctx.arc(head.x, head.y, 2.4, 0, Math.PI * 2); ctx.fill();
+            }
+          }
+
+          if (a.t >= a.stopT && !a.done) {
+            a.done = true;
+            const hit = at(a, a.stopT);
+            ripples.push({ x: hit.x, y: hit.y, r: 2, life: 1 });
+            blocked++;
+            countEl.textContent = blocked.toLocaleString("en-IN");
+            logEl.innerHTML = `${istTime()} · <span class="x">BLOCKED</span> · ${esc(a.type)} · origin ${esc(a.origin)}`;
+          }
+        }
+        attacks = attacks.filter((a) => a.t < a.stopT + 0.3);
+
+        const pulse = (Math.sin(now / 600) + 1) / 2;
+        ctx.strokeStyle = `rgba(29, 122, 82, ${0.35 + pulse * 0.3})`;
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([3, 4]);
+        ctx.beginPath(); ctx.arc(home.x, home.y, SHIELD, 0, Math.PI * 2); ctx.stroke();
+        ctx.setLineDash([]);
+        for (const r of ripples) {
+          r.r += 0.8; r.life -= 0.03;
+          ctx.strokeStyle = `rgba(29, 122, 82, ${Math.max(0, r.life)})`;
+          ctx.beginPath(); ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2); ctx.stroke();
+        }
+        ripples = ripples.filter((r) => r.life > 0);
+        drawHome();
+
+        requestAnimationFrame(frame);
+      }
+
+      layout();
+      if (reduce) {
+        const still = () => { layout(); ctx.drawImage(dots, 0, 0, w, h); drawHome(); };
+        still();
+        addEventListener("resize", still);
+        return;
+      }
+      addEventListener("resize", layout);
+      // Pause the animation while the hero is scrolled out of view.
+      new IntersectionObserver(([en]) => {
+        const was = visible;
+        visible = en.isIntersecting;
+        if (visible && !was) requestAnimationFrame(frame);
+      }).observe(canvas);
+      requestAnimationFrame(frame);
+    })();
   </script>
-  <script src="assets/bg.js"></script>
 </body>
 </html>
