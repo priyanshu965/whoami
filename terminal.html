@@ -7,175 +7,331 @@
   <meta name="description" content="Terminal portfolio of Priyanshu, cybersecurity professional." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Instrument+Serif&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #05080d;
-      --win: #0a0f16;
-      --bar: #111823;
-      --text: #c9d4e3;
-      --muted: #6b7a8f;
-      --accent: #00e5a0;
-      --accent-2: #38bdf8;
-      --warn: #fbbf24;
-      --err: #f87171;
-      --pink: #f472b6;
+      --desk: #0b0a08;
+      --win: #12110d;
+      --pane: #15130f;
+      --bar: #1c1a15;
+      --line: rgba(243, 239, 230, 0.09);
+      --text: #e9e3d6;
+      --muted: #8a8372;
+      --dim: #5c574b;
+      --acc: #ff5a3c;
+      --acc-rgb: 255, 90, 60;
+      --acc2: #f2b84b;
+      --ok: #4cc38a;
+      --info: #7cb7ff;
+      --pink: #f08fb4;
+      --err: #ff6b6b;
     }
-    body[data-theme="amber"] { --accent: #fbbf24; --accent-2: #fb923c; }
-    body[data-theme="cyan"] { --accent: #22d3ee; --accent-2: #a78bfa; }
-    body[data-theme="red"] { --accent: #f43f5e; --accent-2: #fb923c; }
+    body[data-theme="matrix"] { --acc: #39d98a; --acc-rgb: 57, 217, 138; --acc2: #b5e86a; }
+    body[data-theme="amber"] { --acc: #f2b84b; --acc-rgb: 242, 184, 75; --acc2: #ff8a3d; }
+    body[data-theme="ice"] { --acc: #5ec8f2; --acc-rgb: 94, 200, 242; --acc2: #b49cff; }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; }
     body {
-      background: var(--bg);
+      background: radial-gradient(ellipse at 50% -10%, rgba(var(--acc-rgb), .12), transparent 55%), var(--desk);
       color: var(--text);
       font: 14px/1.6 "JetBrains Mono", ui-monospace, monospace;
       padding: 16px;
-      display: flex;
-    }
-    .window {
-      flex: 1;
-      display: flex; flex-direction: column;
-      max-width: 1100px; margin: 0 auto; width: 100%;
-      background: var(--win);
-      border: 1px solid #1c2633;
-      border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 30px 80px -20px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.02), 0 0 60px -30px var(--accent);
-      position: relative;
     }
-    .window::after { /* CRT scanlines */
-      content: ""; position: absolute; inset: 0; pointer-events: none;
-      background: repeating-linear-gradient(0deg, rgba(255,255,255,.018) 0 1px, transparent 1px 3px);
+    #bgmap { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+    a { color: var(--info); }
+
+    /* ---------- window ---------- */
+    .app {
+      position: relative; z-index: 1;
+      height: 100%; max-width: 1320px; margin: 0 auto;
+      display: grid; grid-template-rows: auto 1fr auto auto;
+      background: var(--win);
+      border: 1px solid rgba(243, 239, 230, .12);
+      border-radius: 14px; overflow: hidden;
+      box-shadow: 0 40px 100px -30px rgba(0, 0, 0, .9), 0 0 0 1px rgba(0, 0, 0, .6), 0 0 80px -40px rgba(var(--acc-rgb), .6);
     }
-    .bar {
-      display: flex; align-items: center; gap: 8px;
-      padding: 10px 14px;
-      background: var(--bar);
-      border-bottom: 1px solid #1c2633;
-      font-size: 12px; color: var(--muted);
-      user-select: none;
+    .app::after { /* CRT scanlines + vignette */
+      content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 5;
+      background:
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, .02) 0 1px, transparent 1px 3px),
+        radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, .35));
     }
-    .lights { display: flex; gap: 7px; }
-    .lights a, .lights span { width: 12px; height: 12px; border-radius: 50%; display: block; }
+    .titlebar {
+      display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+      padding: 10px 14px; background: var(--bar); border-bottom: 1px solid var(--line);
+      font-size: 12px; color: var(--muted); user-select: none;
+    }
+    .lights { display: flex; gap: 8px; }
+    .lights > * { width: 12px; height: 12px; border-radius: 50%; display: block; }
     .lights .r { background: #ff5f57; } .lights .y { background: #febc2e; } .lights .g { background: #28c840; }
-    .bar .title { flex: 1; text-align: center; }
-    .bar .switch { color: var(--muted); text-decoration: none; border: 1px solid #263243; padding: 3px 10px; border-radius: 6px; }
-    .bar .switch:hover { color: var(--accent); border-color: var(--accent); }
+    .titlebar .title b { color: var(--text); font-weight: 500; }
+    .titlebar .right { justify-self: end; display: flex; gap: 8px; }
+    .pill { white-space: nowrap; color: var(--muted); text-decoration: none; border: 1px solid rgba(243, 239, 230, .14); padding: 3px 10px; border-radius: 999px; font-size: 11px; }
+    .pill:hover { color: var(--acc); border-color: var(--acc); }
 
-    #screen {
-      flex: 1; overflow-y: auto; padding: 18px 20px 28px;
-      scrollbar-width: thin; scrollbar-color: #263243 transparent;
-      cursor: text;
-    }
-    .line { white-space: pre-wrap; word-break: break-word; }
-    .banner { color: var(--accent); line-height: 1.25; font-size: 13px; margin-bottom: 12px; text-shadow: 0 0 12px color-mix(in srgb, var(--accent) 50%, transparent); overflow-x: auto; white-space: pre; }
+    .body { display: grid; grid-template-columns: 1fr 300px; min-height: 0; }
+    @media (max-width: 1000px) { .body { grid-template-columns: 1fr; } }
+
+    /* ---------- main pane ---------- */
+    #screen { overflow-y: auto; padding: 20px 24px 28px; cursor: text; scrollbar-width: thin; scrollbar-color: #2e2a22 transparent; }
+    .line { white-space: pre-wrap; word-break: break-word; animation: rise .28s ease both; }
+    .line + .line { margin-top: 2px; }
+    @keyframes rise { from { opacity: 0; transform: translateY(4px); } }
+    .stream > * { animation: rise .3s ease both; animation-delay: calc(var(--i, 0) * 35ms); }
+
+    .muted { color: var(--muted); } .dim { color: var(--dim); }
+    .acc { color: var(--acc); } .acc2 { color: var(--acc2); } .ok { color: var(--ok); }
+    .info { color: var(--info); } .pink { color: var(--pink); } .err { color: var(--err); }
+    .b { font-weight: 700; color: #fff8ea; }
+    .block { margin: 6px 0 14px; }
+    .cmd { color: var(--acc); cursor: pointer; border-bottom: 1px dashed rgba(var(--acc-rgb), .5); }
+    .cmd:hover { background: rgba(var(--acc-rgb), .14); }
+    .tag { display: inline-block; color: var(--acc2); background: rgba(242, 184, 75, .08); border: 1px solid rgba(242, 184, 75, .25); border-radius: 4px; padding: 0 7px; margin: 2px 6px 2px 0; font-size: 12px; }
+    .grid { display: grid; grid-template-columns: 200px 1fr; gap: 3px 18px; }
+    @media (max-width: 720px) { .grid { grid-template-columns: 1fr; gap: 0; } .grid > :nth-child(odd) { margin-top: 6px; } }
+    .bar-meter { color: var(--acc); letter-spacing: -1px; }
+
+    /* powerline prompt */
+    .pl { display: inline-flex; vertical-align: middle; margin-right: 8px; font-size: 12px; line-height: 20px; white-space: nowrap; flex: none; }
+    .seg { padding: 0 12px 0 9px; clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 50%, calc(100% - 7px) 100%, 0 100%); }
+    .seg + .seg { margin-left: -4px; padding-left: 13px; clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 50%, calc(100% - 7px) 100%, 0 100%, 7px 50%); }
+    .seg.u { background: var(--acc); color: #120f0b; font-weight: 700; }
+    .seg.d { background: #2c2821; color: var(--text); }
+    .seg.g { background: #211e18; color: var(--ok); }
+    .echo { margin-top: 12px; }
+    .echo .typed { color: #fff8ea; }
+
+    .input-wrap { margin-top: 14px; }
+    .input-wrap .top { color: var(--dim); display: flex; align-items: center; gap: 4px; }
+    .input-wrap .hint { margin-left: auto; color: var(--dim); font-size: 11px; }
+    .input-row { display: flex; align-items: center; gap: 8px; color: var(--dim); }
+    .input-row .arrow { color: var(--acc); font-weight: 700; }
+    #cmd { flex: 1; min-width: 0; background: transparent; border: 0; outline: 0; color: #fff8ea; font: inherit; caret-color: var(--acc); }
+
+    /* neofetch */
+    .fetch { display: grid; grid-template-columns: auto 1fr; gap: 28px; align-items: start; margin: 4px 0 16px; }
+    .fetch .logo { line-height: 1.12; background: linear-gradient(180deg, var(--acc), var(--acc2)); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 0 14px rgba(var(--acc-rgb), .35)); }
+    .fetch .k { color: var(--acc); font-weight: 700; display: inline-block; width: 108px; }
+    .fetch .host { color: var(--acc); font-weight: 700; } .fetch .host span { color: var(--text); }
+    .swatches { margin-top: 8px; display: flex; gap: 0; }
+    .swatches i { width: 26px; height: 14px; display: block; }
+    @media (max-width: 720px) { .fetch { grid-template-columns: 1fr; gap: 10px; } .fetch .logo { font-size: 10px; } .fetch .k { width: 100px; } }
+    .banner { line-height: 1.2; font-size: 13px; overflow-x: auto; white-space: pre; background: linear-gradient(90deg, var(--acc), var(--acc2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
     .banner.small { display: none; }
-    @media (max-width: 720px) {
-      body { padding: 0; font-size: 13px; }
-      .window { border-radius: 0; border: 0; }
-      .banner.big { display: none; } .banner.small { display: block; font-size: 11px; }
-      #screen { padding: 14px 12px 24px; }
-      .bar .title { font-size: 11px; }
-    }
+    @media (max-width: 720px) { .banner.big { display: none; } .banner.small { display: block; font-size: 11px; } }
 
-    .prompt { color: var(--accent); }
-    .prompt .path { color: var(--accent-2); }
-    .muted { color: var(--muted); }
-    .acc { color: var(--accent); }
-    .acc2 { color: var(--accent-2); }
-    .warn { color: var(--warn); }
-    .err { color: var(--err); }
-    .pink { color: var(--pink); }
-    .b { font-weight: 700; color: #f1f5fb; }
-    a { color: var(--accent-2); }
-    .cmd { color: var(--accent); cursor: pointer; text-decoration: underline dotted; text-underline-offset: 3px; }
-    .cmd:hover { background: color-mix(in srgb, var(--accent) 15%, transparent); }
-    .tag { display: inline-block; color: var(--accent-2); border: 1px solid color-mix(in srgb, var(--accent-2) 40%, transparent); border-radius: 4px; padding: 0 6px; margin: 2px 4px 2px 0; font-size: 12px; }
-    .block { margin: 6px 0 12px; }
-    .grid { display: grid; grid-template-columns: 170px 1fr; gap: 2px 16px; }
-    @media (max-width: 720px) { .grid { grid-template-columns: 1fr; gap: 0; } .grid > .k { margin-top: 6px; } }
-    .k { color: var(--accent-2); }
-    .bullet { padding-left: 18px; text-indent: -18px; }
-    .bullet::before { content: "> "; color: var(--accent); }
-    .bar-meter { color: var(--accent); letter-spacing: -1px; }
+    /* boxes & timelines */
+    .box { display: inline-block; border: 1px solid rgba(243, 239, 230, .16); border-radius: 8px; padding: 12px 16px; margin: 6px 0 12px; background: rgba(243, 239, 230, .02); }
+    .tl { border-left: 1px solid rgba(243, 239, 230, .16); margin-left: 5px; padding-left: 18px; }
+    .tl .node { position: relative; padding-bottom: 12px; }
+    .tl .node::before { content: ""; position: absolute; left: -24px; top: 6px; width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--acc); background: var(--win); }
+    .tl .node.now::before { background: var(--acc); box-shadow: 0 0 10px var(--acc); }
 
-    .input-line { display: flex; align-items: baseline; gap: 8px; }
-    .input-line .prompt { white-space: nowrap; }
-    #cmd {
-      flex: 1; min-width: 0;
-      background: transparent; border: 0; outline: 0;
-      color: #f1f5fb; font: inherit; caret-color: var(--accent);
+    /* ---------- side pane ---------- */
+    .side { border-left: 1px solid var(--line); background: var(--pane); overflow-y: auto; scrollbar-width: none; display: flex; flex-direction: column; }
+    .panel { padding: 14px 18px; border-bottom: 1px solid var(--line); }
+    .panel h4 { font: 500 10px "JetBrains Mono", monospace; letter-spacing: .16em; color: var(--dim); margin-bottom: 10px; display: flex; justify-content: space-between; }
+    .panel h4 b { color: var(--acc); font-weight: 500; }
+    .kv { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; font-size: 12px; }
+    .kv dt { color: var(--muted); } .kv dd { text-align: right; color: var(--text); }
+    #mini { width: 100%; height: 132px; display: block; border-radius: 6px; background: rgba(0, 0, 0, .25); }
+    .mini-meta { display: flex; justify-content: space-between; align-items: baseline; margin-top: 8px; font-size: 11px; color: var(--muted); }
+    .mini-meta b { font: 400 26px "Instrument Serif", serif; color: var(--ok); margin-right: 4px; }
+    .mini-log { margin-top: 4px; font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mini-log .x { color: var(--acc); }
+    .quick { list-style: none; display: grid; gap: 2px; }
+    .quick button {
+      width: 100%; display: flex; justify-content: space-between; gap: 8px;
+      background: transparent; border: 0; color: var(--text); font: 12px "JetBrains Mono", monospace;
+      padding: 4px 8px; border-radius: 6px; cursor: pointer; text-align: left;
     }
-    .chips {
-      display: flex; gap: 6px; overflow-x: auto;
-      padding: 8px 12px; border-top: 1px solid #1c2633; background: var(--bar);
-      scrollbar-width: none;
+    .quick button span:first-child::before { content: "› "; color: var(--acc); }
+    .quick button span:last-child { color: var(--dim); }
+    .quick button:hover { background: rgba(var(--acc-rgb), .12); }
+    .quick button:hover span:last-child { color: var(--acc); }
+    .status { display: flex; align-items: center; gap: 10px; font-size: 12px; }
+    .status i { width: 9px; height: 9px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 0 rgba(76, 195, 138, .6); animation: ping 1.8s infinite; }
+    @keyframes ping { 70% { box-shadow: 0 0 0 8px rgba(76, 195, 138, 0); } 100% { box-shadow: 0 0 0 0 rgba(76, 195, 138, 0); } }
+    .side .grow { flex: 1; }
+    @media (max-width: 1000px) { .side { display: none; } }
+
+    /* ---------- chips & tmux status bar ---------- */
+    .chips { display: none; gap: 6px; overflow-x: auto; padding: 8px 12px; border-top: 1px solid var(--line); background: var(--pane); scrollbar-width: none; }
+    .chips button { flex: none; background: transparent; color: var(--muted); border: 1px solid rgba(243, 239, 230, .14); border-radius: 999px; padding: 4px 12px; font: 12px "JetBrains Mono", monospace; cursor: pointer; }
+    .chips button:hover { color: var(--acc); border-color: var(--acc); }
+    @media (max-width: 1000px) { .chips { display: flex; } }
+
+    .tmux { display: flex; align-items: stretch; background: #0e0d0a; border-top: 1px solid var(--line); font-size: 11px; height: 26px; white-space: nowrap; overflow: hidden; }
+    .tmux .s { padding: 0 12px; display: flex; align-items: center; gap: 5px; }
+    .tmux .sess { background: var(--acc); color: #120f0b; font-weight: 700; }
+    .tmux .w { color: var(--muted); }
+    .tmux .w.on { color: var(--text); background: #221f19; }
+    .tmux .w.on::after { content: "*"; color: var(--acc); }
+    .tmux .sp { flex: 1; }
+    .tmux .r1 { color: var(--muted); }
+    .tmux .r2 { background: #221f19; color: var(--text); }
+    .tmux .r3 { background: #2c2821; color: var(--acc2); }
+    @media (max-width: 720px) { body { padding: 0; font-size: 13px; } .app { border-radius: 0; border: 0; } #screen { padding: 14px 12px 20px; } .tmux .hide-sm { display: none; } .titlebar .title { font-size: 11px; } .titlebar .title .hide-sm, .input-wrap .hint { display: none; } }
+
+    /* matrix easter egg */
+    #rain { position: fixed; inset: 0; z-index: 50; display: none; background: rgba(5, 5, 4, .92); cursor: pointer; }
+    #rain.on { display: block; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .line, .stream > * { animation: none; }
+      .status i { animation: none; }
     }
-    .chips button {
-      flex: none; background: transparent; color: var(--muted);
-      border: 1px solid #263243; border-radius: 6px; padding: 4px 10px;
-      font: 12px "JetBrains Mono", monospace; cursor: pointer;
-    }
-    .chips button:hover { color: var(--accent); border-color: var(--accent); }
   </style>
 </head>
 <body>
-  <div class="window">
-    <div class="bar">
+  <canvas id="bgmap" aria-hidden="true"></canvas>
+  <canvas id="rain" aria-hidden="true"></canvas>
+
+  <div class="app">
+    <div class="titlebar">
       <div class="lights">
         <a class="r" href="index.html" title="Exit to start" aria-label="Exit to start"></a>
         <span class="y"></span><span class="g"></span>
       </div>
-      <div class="title">guest@priyanshu: ~ — ssh</div>
-      <a class="switch" href="portfolio.html">GUI mode</a>
+      <div class="title"><b>guest@priyanshu</b><span class="hide-sm"> — ssh — <span id="dims">120×40</span></span></div>
+      <div class="right"><a class="pill" href="portfolio.html">briefing view ↗</a></div>
     </div>
-    <div id="screen" aria-live="polite">
-      <div id="out"></div>
-      <div class="input-line" id="input-line" hidden>
-        <span class="prompt">guest@priyanshu:<span class="path">~</span>$</span>
-        <input id="cmd" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Terminal command" />
+
+    <div class="body">
+      <div id="screen" aria-live="polite">
+        <div id="out"></div>
+        <div class="input-wrap" id="input-line" hidden>
+          <div class="top">╭─<span class="pl"><span class="seg u">guest</span><span class="seg d">~/whoami</span><span class="seg g">⎇ main ✓</span></span><span class="hint">tab completes · ↑↓ history</span></div>
+          <div class="input-row">╰─<span class="arrow">❯</span><input id="cmd" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Terminal command" /></div>
+        </div>
       </div>
+
+      <aside class="side">
+        <div class="panel">
+          <h4>SESSION <b>● LIVE</b></h4>
+          <dl class="kv">
+            <dt>user</dt><dd>guest</dd>
+            <dt>host</dt><dd>priyanshu</dd>
+            <dt>uptime</dt><dd id="uptime">0s</dd>
+            <dt>commands</dt><dd id="count">0</dd>
+            <dt>sound</dt><dd id="snd">on</dd>
+            <dt>theme</dt><dd id="thm">signal</dd>
+          </dl>
+        </div>
+        <div class="panel">
+          <h4>THREAT MONITOR <b>SIM</b></h4>
+          <canvas id="mini"></canvas>
+          <div class="mini-meta"><span><b id="blocked">0</b>blocked</span><span>→ Hyderabad</span></div>
+          <div class="mini-log" id="mini-log">listening…</div>
+        </div>
+        <div class="panel">
+          <h4>QUICK RUN</h4>
+          <ul class="quick" id="quick"></ul>
+        </div>
+        <div class="grow"></div>
+        <div class="panel">
+          <div class="status"><i></i> Open to opportunities</div>
+        </div>
+      </aside>
     </div>
+
     <div class="chips" id="chips"></div>
+
+    <div class="tmux">
+      <span class="s sess">priyanshu</span>
+      <span class="s w on">0:shell</span>
+      <span class="s w hide-sm">1:intel</span>
+      <span class="s w hide-sm">2:ops</span>
+      <span class="sp"></span>
+      <span class="s r1 hide-sm" id="tm-theme">theme:signal</span>
+      <span class="s r2" id="tm-snd">♪ on</span>
+      <span class="s r3">HYD <span id="clock">--:--</span></span>
+    </div>
   </div>
 
   <script src="assets/data.js"></script>
+  <script src="assets/world.js"></script>
   <script>
     const R = window.RESUME;
-    const out = document.getElementById("out");
-    const screen = document.getElementById("screen");
-    const input = document.getElementById("cmd");
-    const inputLine = document.getElementById("input-line");
+    const $ = (id) => document.getElementById(id);
+    const out = $("out");
+    const screen = $("screen");
+    const input = $("cmd");
+    const inputLine = $("input-line");
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
     const c = (name, label) => `<span class="cmd" data-cmd="${esc(name)}">${esc(label || name)}</span>`;
     const tags = (arr) => arr.map((t) => `<span class="tag">${esc(t)}</span>`).join("");
+    const PROMPT = `<span class="pl"><span class="seg u">guest</span><span class="seg d">~</span></span>`;
 
     const BANNER_BIG = "    ____  ____  ______  _____    _   _______ __  ____  __\n   / __ \\/ __ \\/  _/\\ \\/ /   |  / | / / ___// / / / / / /\n  / /_/ / /_/ // /   \\  / /| | /  |/ /\\__ \\/ /_/ / / / / \n / ____/ _, _// /    / / ___ |/ /|  /___/ / __  / /_/ /  \n/_/   /_/ |_/___/   /_/_/  |_/_/ |_//____/_/ /_/\\____/";
     const BANNER_SMALL = " ___ ___ _____   ___   _  _ ___ _  _ _   _ \n| _ \\ _ \\_ _\\ \\ / /_\\ | \\| / __| || | | | |\n|  _/   /| | \\ V / _ \\| .` \\__ \\ __ | |_| |\n|_| |_|_\\___| |_/_/ \\_\\_|\\_|___/_||_|\\___/";
+
+    const LOGO = [
+      "  ▄██████████████▄  ",
+      "  ████████████████  ",
+      "  ██████▀▀▀▀██████  ",
+      "  █████  ▄▄  █████  ",
+      "  █████ ████ █████  ",
+      "  ██████▄▄▄▄██████  ",
+      "   ██████  ██████   ",
+      "    ▀████  ████▀    ",
+      "      ▀██████▀      ",
+      "        ▀██▀        ",
+    ].join("\n");
 
     function print(html, cls = "line") {
       const div = document.createElement("div");
       div.className = cls;
       div.innerHTML = html;
+      // Let multi-part output stream in piece by piece.
+      if (!reduce) div.querySelectorAll(".stream").forEach((s) => [...s.children].forEach((ch, i) => ch.style.setProperty("--i", i)));
       out.appendChild(div);
       screen.scrollTop = screen.scrollHeight;
       return div;
+    }
+
+    // ---------- session state ----------
+    const started = Date.now();
+    let cmdCount = 0;
+    function uptime() {
+      const s = Math.floor((Date.now() - started) / 1000);
+      return s < 60 ? `${s}s` : `${Math.floor(s / 60)}m ${s % 60}s`;
     }
 
     // ---------- commands ----------
     const FILES = {
       "about.txt": "about",
       "experience.log": "experience",
-      "skills.json": "skills",
+      "skills/": "skills",
       "projects/": "projects",
       "certs.txt": "certs",
       "education.md": "education",
       "contact.txt": "contact",
       "resume.pdf": "resume",
     };
+
+    function neofetch() {
+      const rows = [
+        ["role", R.experience[0].role],
+        ["org", R.experience[0].company],
+        ["location", R.location],
+        ["experience", `3+ years · ${R.experience.length} roles`],
+        ["focus", "EASM · Threat Intel · Vuln Mgmt"],
+        ["certs", `${R.certifications.length} verified`],
+        ["shell", "zsh 5.9 over ssh"],
+        ["uptime", uptime()],
+        ["status", `<span class="ok">●</span> open to opportunities`],
+      ];
+      const sw = ["var(--acc)", "var(--acc2)", "var(--ok)", "var(--info)", "var(--pink)", "#e9e3d6", "#5c574b", "#2c2821"];
+      return `<div class="fetch"><pre class="logo">${esc(LOGO)}</pre><div class="stream">` +
+        `<div class="host">guest<span>@</span>priyanshu</div><div class="dim">──────────────────────</div>` +
+        rows.map(([k, v]) => `<div><span class="k">${k}</span>${k === "status" ? v : esc(v)}</div>`).join("") +
+        `<div class="swatches">${sw.map((s) => `<i style="background:${s}"></i>`).join("")}</div></div></div>`;
+    }
 
     const commands = {
       help: {
@@ -185,21 +341,24 @@
             .filter(([, v]) => !v.hidden)
             .map(([k, v]) => `<span>${c(k)}</span><span class="muted">${esc(v.desc)}</span>`)
             .join("");
-          return `<div class="block"><div class="grid">${rows}</div></div>` +
-            `<div class="muted">Tip: <span class="acc">Tab</span> autocompletes, <span class="acc">↑/↓</span> walks history, <span class="acc">Ctrl+L</span> clears. Click any <span class="cmd">underlined</span> command to run it.\nRecruiter? You have root for one command: ${c("sudo hire priyanshu")}</div>`;
+          return `<div class="block grid stream">${rows}</div>` +
+            `<div class="muted"><span class="acc2">Tab</span> autocompletes · <span class="acc2">↑/↓</span> history · <span class="acc2">Ctrl+L</span> clears · click any <span class="cmd">command</span> to run it\n` +
+            `Recruiter? You have root for exactly one command: ${c("sudo hire priyanshu")}</div>`;
         },
       },
+      neofetch: { desc: "system summary, neofetch-style", run: neofetch },
       whoami: {
         desc: "who is behind this shell",
         run: () =>
-          `<div class="block"><span class="b">${esc(R.name)}</span> <span class="muted">—</span> <span class="acc">${esc(R.title)}</span>\n` +
-          `<span class="muted">loc:</span> ${esc(R.location)}   <span class="muted">current:</span> Info Security Analyst @ Bank of America\n\n` +
-          `${esc(R.tagline)}\n\nTry ${c("about")}, ${c("experience")} or ${c("ls")}.</div>`,
+          `<div class="box"><span class="b">${esc(R.name)}</span> <span class="dim">·</span> <span class="acc">${esc(R.title)}</span>\n` +
+          `<span class="muted">${esc(R.experience[0].role)} @ ${esc(R.experience[0].company)} · ${esc(R.location)}</span>\n\n` +
+          `<span class="acc2">“</span>${esc(R.tagline)}<span class="acc2">”</span></div>\n` +
+          `<span class="muted">next:</span> ${c("about")}  ${c("experience")}  ${c("skills")}  ${c("ls")}`,
       },
       about: {
         desc: "professional summary",
         run: () =>
-          `<div class="block">${esc(R.summary)}</div><div class="block grid">` +
+          `<div class="block">${esc(R.summary)}</div><div class="block grid stream">` +
           R.stats.map((s) => `<span class="acc b">${esc(s.value)}</span><span class="muted">${esc(s.label)}</span>`).join("") +
           `</div>`,
       },
@@ -209,86 +368,95 @@
           const n = parseInt(args[0], 10);
           if (n >= 1 && n <= R.experience.length) {
             const e = R.experience[n - 1];
-            return `<div class="block"><span class="b">${esc(e.role)}</span> <span class="muted">@</span> <span class="acc2">${esc(e.company)}</span>\n` +
-              `<span class="muted">${esc(e.period)}</span>\n${tags(e.tags)}\n` +
-              e.points.map((p) => `<div class="bullet">${esc(p)}</div>`).join("") + `</div>`;
+            return `<div class="box"><span class="b">${esc(e.role)}</span> <span class="dim">@</span> <span class="acc2">${esc(e.company)}</span>   <span class="muted">${esc(e.period)}</span>\n${tags(e.tags)}</div>` +
+              `<div class="block stream">${e.points.map((p) => `<div><span class="acc">▸</span> ${esc(p)}</div>`).join("")}</div>`;
           }
-          return `<div class="block">` + R.experience.map((e, i) =>
-            `<div><span class="muted">[${i + 1}]</span> <span class="warn">${esc(e.period.padEnd(20))}</span> <span class="b">${esc(e.role)}</span> <span class="muted">@ ${esc(e.company)}</span></div>`
-          ).join("") + `</div><div class="muted">Inspect a role: ${R.experience.map((_, i) => c(`experience ${i + 1}`)).join("  ")}</div>`;
+          return `<div class="block tl stream">` + R.experience.map((e, i) =>
+            `<div class="node ${i === 0 ? "now" : ""}"><span class="acc2">${esc(e.period)}</span>\n` +
+            `<span class="b">${esc(e.role)}</span> <span class="muted">@ ${esc(e.company)}</span>\n` +
+            `<span class="muted">${esc(e.simple)}</span>  ${c(`experience ${i + 1}`, "→ details")}</div>`
+          ).join("") + `</div>`;
         },
       },
       skills: {
-        desc: "technical arsenal",
+        desc: "technical arsenal, as a tree",
         run: () => {
-          const json = R.skills.map((s) =>
-            `  <span class="acc2">"${esc(s.group)}"</span>: [${s.items.map((i) => `<span class="warn">"${esc(i)}"</span>`).join(", ")}]`
-          ).join(",\n");
-          return `<div class="block"><span class="muted">$ cat skills.json</span>\n{\n${json}\n}</div>`;
+          const lines = [`<span class="acc b">~/skills</span>`];
+          R.skills.forEach((s, gi) => {
+            const lastG = gi === R.skills.length - 1;
+            lines.push(`<span class="dim">${lastG ? "└──" : "├──"}</span> <span class="acc2">${esc(s.group)}/</span>`);
+            s.items.forEach((it, ii) => {
+              const lastI = ii === s.items.length - 1;
+              lines.push(`<span class="dim">${lastG ? "    " : "│   "}${lastI ? "└──" : "├──"}</span> ${esc(it)}`);
+            });
+          });
+          const total = R.skills.reduce((n, s) => n + s.items.length, 0);
+          return `<div class="block stream">${lines.map((l) => `<div>${l}</div>`).join("")}</div>` +
+            `<div class="muted">${R.skills.length} directories, ${total} tools</div>`;
         },
       },
       projects: {
         desc: "things I've built",
         run: () =>
-          `<div class="block">` + R.projects.map((p) =>
-            `<div class="block"><span class="acc">./${esc(p.cmd)} --run</span>  <span class="b">${esc(p.name)}</span>\n${tags(p.tags)}\n` +
-            p.points.map((x) => `<div class="bullet">${esc(x)}</div>`).join("") + `</div>`
-          ).join("") + `</div>`,
+          R.projects.map((p) =>
+            `<div class="box"><span class="acc">$ ./${esc(p.cmd)} --run</span>  <span class="ok">✓ exited 0</span>\n<span class="b">${esc(p.name)}</span>\n${tags(p.tags)}\n` +
+            `<div class="stream">${p.points.map((x) => `<div><span class="acc">▸</span> ${esc(x)}</div>`).join("")}</div></div>`
+          ).join("\n"),
       },
       certs: {
         desc: "certifications",
         run: () =>
-          `<div class="block">` + R.certifications.map((x) =>
-            `<div><span class="acc">[✓]</span> <span class="warn">${esc(x.short.padEnd(6))}</span> ${esc(x.name)} <span class="muted">— ${esc(x.issuer)}</span></div>`
-          ).join("") + `</div><div class="muted">${R.certifications.length} certificates verified.</div>`,
+          `<div class="block stream">` + R.certifications.map((x) =>
+            `<div><span class="ok">✔</span> <span class="acc2">${esc(x.short.padEnd(6))}</span> ${esc(x.name)} <span class="dim">— ${esc(x.issuer)}</span></div>`
+          ).join("") + `</div><div class="muted">${R.certifications.length} certificates verified · signatures valid</div>`,
       },
       education: {
         desc: "academic background",
         run: () =>
-          `<div class="block">` + R.education.map((e) =>
-            `<div class="block"><span class="b">${esc(e.degree)}</span>\n<span class="acc2">${esc(e.school)}</span>  <span class="muted">${esc(e.period)} · ${esc(e.place)}</span></div>`
+          `<div class="block tl stream">` + R.education.map((e, i) =>
+            `<div class="node ${i === 0 ? "now" : ""}"><span class="acc2">${esc(e.period)}</span> <span class="dim">· ${esc(e.place)}</span>\n<span class="b">${esc(e.degree)}</span>\n<span class="muted">${esc(e.school)}</span></div>`
           ).join("") + `</div>`,
       },
       contact: {
         desc: "how to reach me",
         run: () =>
-          `<div class="block grid">` +
-          `<span class="k">email</span><span><a href="mailto:${esc(R.email)}">${esc(R.email)}</a></span>` +
-          `<span class="k">phone</span><span><a href="tel:${esc(R.phone.replace(/-/g, ""))}">${esc(R.phone)}</a></span>` +
-          `<span class="k">linkedin</span><span><a href="${esc(R.linkedin)}" target="_blank" rel="noopener">${esc(R.linkedin.replace("https://www.", ""))}</a></span>` +
-          `<span class="k">location</span><span>${esc(R.location)}</span>` +
-          `<span class="k">resume</span><span>${c("resume", "resume.pdf")}</span>` +
-          `</div>`,
+          `<div class="box"><div class="grid stream" style="grid-template-columns: 90px 1fr">` +
+          `<span class="acc">email</span><span><a href="mailto:${esc(R.email)}">${esc(R.email)}</a></span>` +
+          `<span class="acc">phone</span><span><a href="tel:${esc(R.phone.replace(/-/g, ""))}">${esc(R.phone)}</a></span>` +
+          `<span class="acc">linkedin</span><span><a href="${esc(R.linkedin)}" target="_blank" rel="noopener">${esc(R.linkedin.replace("https://www.", ""))}</a></span>` +
+          `<span class="acc">location</span><span>${esc(R.location)}</span>` +
+          `<span class="acc">resume</span><span>${c("resume", "resume.pdf")}</span>` +
+          `</div></div>`,
       },
       resume: {
         desc: "download my resume (PDF)",
         run() {
           window.open(R.resume, "_blank");
-          return `<span class="acc">[+]</span> Opening <a href="${esc(R.resume)}" target="_blank" rel="noopener">resume.pdf</a> ...`;
+          return `<span class="ok">[+]</span> Opening <a href="${esc(R.resume)}" target="_blank" rel="noopener">resume.pdf</a> …`;
         },
       },
       writeups: {
         desc: "CTF writeups & blog posts",
         run() {
           if (!R.writeups.length) {
-            return `<div class="block"><span class="muted">$ ls ~/writeups</span>\n<span class="muted">total 0</span>\n\n` +
-              `<span class="warn">[~]</span> Writeups are being drafted. The first CTF walkthroughs land here soon.\n` +
-              `<span class="muted">Meanwhile, follow along on</span> ${c("linkedin", "LinkedIn")}.</div>`;
+            return `<span class="muted">$ ls -la ~/writeups</span>\n<span class="muted">total 0</span>\n\n` +
+              `<span class="acc2">[~]</span> Writeups are being drafted. The first CTF walkthroughs land here soon.\n` +
+              `<span class="muted">Meanwhile, follow along on</span> ${c("linkedin", "LinkedIn")}.`;
           }
-          return `<div class="block">` + R.writeups.map((w) =>
-            `<div class="block"><span class="warn">${esc(w.date)}</span>  <span class="${w.type === "CTF" ? "pink" : "acc2"}">[${esc(w.type)}]</span> ` +
+          return `<div class="block stream">` + R.writeups.map((w) =>
+            `<div class="block"><span class="acc2">${esc(w.date)}</span>  <span class="${w.type === "CTF" ? "pink" : "info"}">[${esc(w.type)}]</span> ` +
             `<a class="b" href="${esc(w.url)}" target="_blank" rel="noopener">${esc(w.title)}</a>\n${tags(w.tags || [])}\n<span class="muted">${esc(w.summary)}</span></div>`
           ).join("") + `</div>`;
         },
       },
       interests: {
         desc: "life outside the SOC",
-        run: () => `<div class="block">${R.interests.map((i) => `<span class="pink">♥</span> ${esc(i)}`).join("   ")}</div>`,
+        run: () => `<div class="block">${R.interests.map((i) => `<span class="pink">♥</span> ${esc(i)}`).join("    ")}</div>`,
       },
       ls: {
         desc: "list files",
         run: () => Object.keys(FILES).map((f) =>
-          `<span class="cmd ${f.endsWith("/") ? "acc2" : ""}" data-cmd="cat ${esc(f)}">${esc(f)}</span>`).join("   "),
+          `<span class="cmd ${f.endsWith("/") ? "info" : ""}" data-cmd="cat ${esc(f)}">${esc(f)}</span>`).join("   "),
       },
       cat: {
         desc: "read a file  (cat about.txt)",
@@ -301,23 +469,33 @@
         },
       },
       theme: {
-        desc: "change colors  (green | amber | cyan | red)",
+        desc: "change colors  (signal | matrix | amber | ice)",
         run(args) {
           const t = (args[0] || "").toLowerCase();
-          const ok = ["green", "amber", "cyan", "red"];
+          const ok = ["signal", "matrix", "amber", "ice"];
           if (!ok.includes(t)) return `usage: theme ${ok.map((x) => c(`theme ${x}`, x)).join(" | ")}`;
-          document.body.dataset.theme = t === "green" ? "" : t;
+          setTheme(t);
           try { localStorage.setItem("term-theme", t); } catch {}
-          return `<span class="acc">[+]</span> theme set to ${esc(t)}`;
+          return `<span class="ok">[+]</span> theme set to ${esc(t)}`;
         },
       },
+      sound: {
+        desc: "toggle typing sounds  (sound on | off)",
+        run(args) {
+          const v = (args[0] || "").toLowerCase();
+          setSound(v === "on" ? true : v === "off" ? false : !soundOn);
+          try { localStorage.setItem("term-sound", soundOn ? "on" : "off"); } catch {}
+          return `<span class="ok">[+]</span> typing sounds ${soundOn ? "enabled" : "disabled"}`;
+        },
+      },
+      matrix: { desc: "follow the white rabbit", run() { startRain(); return `<span class="muted">wake up, guest… (any key to exit)</span>`; } },
       banner: { desc: "print the banner", run: () => bannerHTML() },
       history: {
         desc: "command history",
-        run: () => hist.map((h, i) => `<span class="muted">${String(i + 1).padStart(4)}</span>  ${esc(h)}`).join("\n") || `<span class="muted">(empty)</span>`,
+        run: () => hist.map((h, i) => `<span class="dim">${String(i + 1).padStart(4)}</span>  ${esc(h)}`).join("\n") || `<span class="muted">(empty)</span>`,
       },
       clear: { desc: "clear the screen", run() { out.innerHTML = ""; return null; } },
-      gui: { desc: "switch to the regular portfolio", run() { setTimeout(() => (location.href = "portfolio.html"), 400); return "Launching GUI ..."; } },
+      gui: { desc: "switch to the briefing view", run() { setTimeout(() => (location.href = "portfolio.html"), 400); return "Launching briefing view …"; } },
       exit: { desc: "leave the terminal", run() { setTimeout(() => (location.href = "index.html"), 400); return "logout\nConnection to priyanshu closed."; } },
 
       // hidden / easter eggs
@@ -327,9 +505,9 @@
       blog: { hidden: true, run: () => commands.writeups.run() },
       ctf: { hidden: true, run: () => commands.writeups.run() },
       phone: { hidden: true, run: () => `<a href="tel:${esc(R.phone.replace(/-/g, ""))}">${esc(R.phone)}</a>` },
-      call: { hidden: true, run() { location.href = `tel:${R.phone.replace(/-/g, "")}`; return `Dialing ${esc(R.phone)} ...`; } },
-      email: { hidden: true, run() { location.href = `mailto:${R.email}`; return `Opening mail client for ${esc(R.email)} ...`; } },
-      linkedin: { hidden: true, run() { window.open(R.linkedin, "_blank"); return "Opening LinkedIn ..."; } },
+      call: { hidden: true, run() { location.href = `tel:${R.phone.replace(/-/g, "")}`; return `Dialing ${esc(R.phone)} …`; } },
+      email: { hidden: true, run() { location.href = `mailto:${R.email}`; return `Opening mail client for ${esc(R.email)} …`; } },
+      linkedin: { hidden: true, run() { window.open(R.linkedin, "_blank"); return "Opening LinkedIn …"; } },
       pwd: { hidden: true, run: () => "/home/guest" },
       date: { hidden: true, run: () => esc(new Date().toString()) },
       echo: { hidden: true, run: (args) => esc(args.join(" ")) },
@@ -338,19 +516,10 @@
         hidden: true,
         run(args) {
           if (/^hire(\s+priyanshu)?$/i.test(args.join(" "))) { hireSequence(); return null; }
-          return `<span class="err">guest is not in the sudoers file. This incident will be reported.</span>\n<span class="muted">psst... try</span> ${c("sudo hire priyanshu")}`;
+          return `<span class="err">guest is not in the sudoers file. This incident will be reported.</span>\n<span class="muted">psst… try</span> ${c("sudo hire priyanshu")}`;
         },
       },
       hire: { hidden: true, run: () => `<span class="err">hire: permission denied</span> <span class="muted">— this one needs root. Try</span> ${c("sudo hire priyanshu")}` },
-      sound: {
-        desc: "toggle typing sounds  (sound on | off)",
-        run(args) {
-          const v = (args[0] || "").toLowerCase();
-          soundOn = v === "on" ? true : v === "off" ? false : !soundOn;
-          try { localStorage.setItem("term-sound", soundOn ? "on" : "off"); } catch {}
-          return `<span class="acc">[+]</span> typing sounds ${soundOn ? "enabled" : "disabled"}`;
-        },
-      },
       rm: { hidden: true, run: () => `<span class="err">rm: refusing to remove '/': protected by a cautious security analyst</span>` },
       hack: { hidden: true, run: () => fakeScan() },
       nmap: { hidden: true, run: () => fakeScan() },
@@ -359,20 +528,24 @@
         run: (args) => {
           const host = esc(args[0] || "priyanshu");
           return `PING ${host}: 56 data bytes\n` + [12, 9, 11].map((t, i) => `64 bytes from ${host}: icmp_seq=${i} ttl=64 time=${t}.${i}ms`).join("\n") +
-            `\n<span class="acc">--- ${host} is up and open to opportunities ---</span>`;
+            `\n<span class="ok">--- ${host} is up and open to opportunities ---</span>`;
         },
       },
     };
 
     function fakeScan() {
-      return `<span class="muted">Starting Nmap 7.95 against priyanshu</span>\n` +
-        `PORT     STATE  SERVICE\n` +
-        `22/tcp   <span class="acc">open</span>   threat-intel\n` +
-        `80/tcp   <span class="acc">open</span>   vuln-management\n` +
-        `443/tcp  <span class="acc">open</span>   attack-surface-mgmt\n` +
-        `3389/tcp <span class="err">closed</span> laziness\n` +
-        `8080/tcp <span class="acc">open</span>   new-opportunities\n\n` +
+      return `<span class="muted">Starting Nmap 7.95 against priyanshu</span>\n<div class="stream">` +
+        `<div class="b">PORT     STATE  SERVICE</div>` +
+        `<div>22/tcp   <span class="ok">open</span>   threat-intel</div>` +
+        `<div>80/tcp   <span class="ok">open</span>   vuln-management</div>` +
+        `<div>443/tcp  <span class="ok">open</span>   attack-surface-mgmt</div>` +
+        `<div>3389/tcp <span class="err">closed</span> laziness</div>` +
+        `<div>8080/tcp <span class="ok">open</span>   new-opportunities</div></div>\n` +
         `<span class="muted">Host appears hireable. Run</span> ${c("contact")}`;
+    }
+
+    function bannerHTML() {
+      return `<pre class="banner big">${esc(BANNER_BIG)}</pre><pre class="banner small">${esc(BANNER_SMALL)}</pre>`;
     }
 
     // ---------- sudo hire priyanshu ----------
@@ -381,7 +554,7 @@
       inputLine.hidden = true;
       print(`[sudo] password for guest: <span class="muted">********</span>`);
       await sleep(700);
-      print(`<span class="acc">[✓]</span> Authorization granted. Welcome, recruiter.`);
+      print(`<span class="ok">[✓]</span> Authorization granted. Welcome, recruiter.`);
       await sleep(400);
 
       const steps = [
@@ -391,20 +564,20 @@
         ["Running background check", "clean — only finds vulnerabilities, never causes them"],
       ];
       for (const [label, result] of steps) {
-        const row = print(`<span class="muted">[*]</span> ${esc(label)} <span class="bar-meter"></span>`);
+        const row = print(`<span class="muted">[*]</span> ${esc(label.padEnd(27))}<span class="bar-meter"></span>`);
         const meter = row.querySelector(".bar-meter");
         for (let i = 1; i <= 20; i++) {
           meter.textContent = "[" + "█".repeat(i) + "░".repeat(20 - i) + "]";
           if (soundOn) blip(900 + i * 20, 0.015);
           await sleep(35);
         }
-        meter.insertAdjacentHTML("afterend", ` <span class="acc">OK</span> <span class="muted">${esc(result)}</span>`);
+        meter.insertAdjacentHTML("afterend", ` <span class="ok">OK</span> <span class="muted">${esc(result)}</span>`);
         await sleep(200);
       }
 
       await sleep(300);
       print(
-        `<div class="block"><span class="acc" style="font-weight:700; text-shadow: 0 0 10px currentColor">┌──────────────────────────────────────────┐\n` +
+        `<div class="block"><span class="acc" style="font-weight:700; text-shadow: 0 0 12px currentColor">┌──────────────────────────────────────────┐\n` +
         `│   MATCH FOUND: 100% compatibility        │\n` +
         `│   Candidate: ${esc(R.name.padEnd(28))}│\n` +
         `│   Status:    READY TO DEFEND YOUR ORG    │\n` +
@@ -412,7 +585,7 @@
       );
       if (soundOn) { blip(660, 0.08); setTimeout(() => blip(990, 0.12), 110); }
       const subject = encodeURIComponent(`Opportunity for ${R.name} (via your portfolio)`);
-      print(`<span class="acc">[+]</span> Next step: <a href="mailto:${esc(R.email)}?subject=${subject}">send the offer letter →</a>  <span class="muted">or</span> ${c("resume", "grab the resume")}`);
+      print(`<span class="ok">[+]</span> Next step: <a href="mailto:${esc(R.email)}?subject=${subject}">send the offer letter →</a>  <span class="muted">or</span> ${c("resume", "grab the resume")}`);
 
       inputLine.hidden = false;
       input.focus();
@@ -423,7 +596,7 @@
     let soundOn = true;
     try { soundOn = localStorage.getItem("term-sound") !== "off"; } catch {}
     let audio;
-    function ctx() {
+    function audioCtx() {
       if (!audio) audio = new (window.AudioContext || window.webkitAudioContext)();
       if (audio.state === "suspended") audio.resume();
       return audio;
@@ -432,7 +605,7 @@
     function keyClick(heavy) {
       if (!soundOn) return;
       try {
-        const a = ctx();
+        const a = audioCtx();
         const len = Math.floor(a.sampleRate * (heavy ? 0.05 : 0.025));
         const buf = a.createBuffer(1, len, a.sampleRate);
         const data = buf.getChannelData(0);
@@ -451,7 +624,7 @@
     }
     function blip(freq, dur) {
       try {
-        const a = ctx();
+        const a = audioCtx();
         const o = a.createOscillator();
         const g = a.createGain();
         o.type = "square";
@@ -464,9 +637,33 @@
       } catch {}
     }
 
-    function bannerHTML() {
-      return `<pre class="banner big">${esc(BANNER_BIG)}</pre><pre class="banner small">${esc(BANNER_SMALL)}</pre>`;
+    // ---------- status widgets ----------
+    function setSound(on) {
+      soundOn = on;
+      $("snd").textContent = on ? "on" : "off";
+      $("tm-snd").textContent = on ? "♪ on" : "♪ off";
     }
+    function setTheme(t) {
+      document.body.dataset.theme = t === "signal" ? "" : t;
+      $("thm").textContent = t;
+      $("tm-theme").textContent = `theme:${t}`;
+      drawBgMap();
+    }
+    setSound(soundOn);
+
+    const clock = $("clock");
+    setInterval(() => {
+      clock.textContent = new Date().toLocaleTimeString("en-GB", { timeZone: "Asia/Kolkata", hour12: false, hour: "2-digit", minute: "2-digit" });
+      $("uptime").textContent = uptime();
+    }, 1000);
+    clock.textContent = new Date().toLocaleTimeString("en-GB", { timeZone: "Asia/Kolkata", hour12: false, hour: "2-digit", minute: "2-digit" });
+
+    function updateDims() {
+      const cw = 8.4, ch = 22.4; // approx cell size of 14px JetBrains Mono
+      $("dims").textContent = `${Math.floor(screen.clientWidth / cw)}×${Math.floor(screen.clientHeight / ch)}`;
+    }
+    addEventListener("resize", updateDims);
+    updateDims();
 
     // ---------- input handling ----------
     const hist = [];
@@ -474,10 +671,11 @@
 
     function run(raw) {
       const line = raw.trim();
-      print(`<span class="prompt">guest@priyanshu:<span class="path">~</span>$</span> ${esc(raw)}`);
+      print(`${PROMPT}<span class="typed">${esc(raw)}</span>`, "line echo");
       if (!line) return;
       hist.push(line);
       hIdx = hist.length;
+      $("count").textContent = ++cmdCount;
 
       const [name, ...args] = line.split(/\s+/);
       const cmd = commands[name.toLowerCase()];
@@ -509,7 +707,7 @@
         if (parts.length === 1) {
           const m = Object.keys(commands).filter((k) => !commands[k].hidden && k.startsWith(v));
           if (m.length === 1) input.value = m[0] + " ";
-          else if (m.length > 1) { print(`<span class="prompt">guest@priyanshu:<span class="path">~</span>$</span> ${esc(v)}`); print(m.map((x) => c(x)).join("   ")); }
+          else if (m.length > 1) { print(`${PROMPT}<span class="typed">${esc(v)}</span>`, "line echo"); print(m.map((x) => c(x)).join("   ")); }
         } else if (parts[0] === "cat") {
           const m = Object.keys(FILES).filter((f) => f.startsWith(parts[1]));
           if (m.length === 1) input.value = `cat ${m[0]}`;
@@ -519,7 +717,7 @@
         e.preventDefault();
         out.innerHTML = "";
       } else if (e.key === "c" && e.ctrlKey && !window.getSelection().toString()) {
-        print(`<span class="prompt">guest@priyanshu:<span class="path">~</span>$</span> ${esc(input.value)}^C`);
+        print(`${PROMPT}<span class="typed">${esc(input.value)}</span><span class="muted">^C</span>`, "line echo");
         input.value = "";
       }
     });
@@ -531,35 +729,152 @@
       if (!window.getSelection().toString() && !e.target.closest("a")) input.focus();
     });
 
-    // Quick command chips (handy on phones)
-    const chips = document.getElementById("chips");
-    ["help", "whoami", "about", "experience", "skills", "projects", "certs", "education", "writeups", "contact", "resume", "sudo hire priyanshu", "clear", "gui"].forEach((name) => {
-      const b = document.createElement("button");
-      b.textContent = name;
-      b.dataset.cmd = name;
-      chips.appendChild(b);
+    const QUICK = [["whoami", "who"], ["experience", "record"], ["skills", "tree"], ["projects", "ops"], ["certs", "8"], ["contact", "reach"], ["sudo hire priyanshu", "root"], ["matrix", "?"]];
+    $("quick").innerHTML = QUICK.map(([cmd, hint]) => `<li><button data-cmd="${esc(cmd)}"><span>${esc(cmd)}</span><span>${esc(hint)}</span></button></li>`).join("");
+    $("chips").innerHTML = ["help", "whoami", "experience", "skills", "projects", "certs", "writeups", "contact", "resume", "sudo hire priyanshu", "clear", "gui"]
+      .map((n) => `<button data-cmd="${esc(n)}">${esc(n)}</button>`).join("");
+
+    // ---------- world maps (background + side monitor) ----------
+    const W = window.WORLD;
+    const LAND = [];
+    W.grid.forEach((hex, r) => {
+      const bits = BigInt("0x" + hex).toString(2).padStart(W.cols, "0");
+      for (let col = 0; col < W.cols; col++) if (bits[col] === "1") LAND.push({ c: col, r });
     });
+    const RATIO = ((W.lat0 - W.lat1) / W.rows) / (360 / W.cols);
+    const HOME = { lon: 78.47, lat: 17.38 };
+    const homeCell = { c: ((HOME.lon + 180) / 360) * W.cols, r: ((W.lat0 - HOME.lat) / (W.lat0 - W.lat1)) * W.rows };
+    const accRGB = () => getComputedStyle(document.body).getPropertyValue("--acc-rgb").trim();
+
+    function drawBgMap() {
+      const cv = $("bgmap"), g = cv.getContext("2d");
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      const w = innerWidth, h = innerHeight;
+      cv.width = w * dpr; cv.height = h * dpr;
+      g.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const cell = Math.max(w / W.cols, h / (W.rows * RATIO)) * 1.05;
+      const cellH = cell * RATIO;
+      const ox = (w - W.cols * cell) / 2, oy = (h - W.rows * cellH) / 2;
+      g.fillStyle = `rgba(${accRGB()}, 0.10)`;
+      for (const p of LAND) { g.beginPath(); g.arc(ox + (p.c + .5) * cell, oy + (p.r + .5) * cellH, cell * .16, 0, Math.PI * 2); g.fill(); }
+    }
+    addEventListener("resize", drawBgMap);
+
+    (function monitor() {
+      const cv = $("mini"), g = cv.getContext("2d");
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      const TYPES = ["phish-domain", "cred-stuffing", "port-scan", "bucket-probe", "c2-beacon", "ssh-brute", "typosquat"];
+      let w, h, cell, cellH, ox, oy, home, attacks = [], ripples = [], blocked = 0, last = 0;
+      const pos = (col, r) => ({ x: ox + (col + .5) * cell, y: oy + (r + .5) * cellH });
+      function layout() {
+        w = cv.clientWidth; h = cv.clientHeight;
+        if (!w) return;
+        cv.width = w * dpr; cv.height = h * dpr;
+        g.setTransform(dpr, 0, 0, dpr, 0, 0);
+        cell = w / W.cols; cellH = cell * RATIO;
+        ox = 0; oy = (h - W.rows * cellH) / 2;
+        home = { x: ox + homeCell.c * cell, y: oy + homeCell.r * cellH };
+      }
+      function launch() {
+        const p = LAND[(Math.random() * LAND.length) | 0];
+        const from = pos(p.c, p.r);
+        const dist = Math.hypot(home.x - from.x, home.y - from.y);
+        if (dist < 40) return;
+        attacks.push({ from, ctrl: { x: (from.x + home.x) / 2, y: Math.min(from.y, home.y) - dist * .3 }, t: 0, speed: .01 + Math.random() * .008, stop: 1 - 8 / dist });
+      }
+      const at = (a, t) => { const u = 1 - t; return { x: u * u * a.from.x + 2 * u * t * a.ctrl.x + t * t * home.x, y: u * u * a.from.y + 2 * u * t * a.ctrl.y + t * t * home.y }; };
+      function frame(now) {
+        if (!w) { layout(); return requestAnimationFrame(frame); }
+        const rgb = accRGB();
+        g.clearRect(0, 0, w, h);
+        g.fillStyle = "rgba(233, 227, 214, 0.22)";
+        for (const p of LAND) { const q = pos(p.c, p.r); g.fillRect(q.x - .6, q.y - .6, 1.2, 1.2); }
+        if (now - last > 800) { launch(); last = now; }
+        for (const a of attacks) {
+          a.t += a.speed;
+          const head = Math.min(a.t, a.stop), tail = Math.max(0, Math.min(a.t, a.stop + .3) - .3);
+          if (tail < head) {
+            g.beginPath();
+            for (let s = 0; s <= 16; s++) { const p = at(a, tail + ((head - tail) * s) / 16); s ? g.lineTo(p.x, p.y) : g.moveTo(p.x, p.y); }
+            g.strokeStyle = `rgba(${rgb}, .85)`; g.lineWidth = 1; g.stroke();
+          }
+          if (a.t >= a.stop && !a.done) {
+            a.done = true;
+            const p = at(a, a.stop);
+            ripples.push({ x: p.x, y: p.y, r: 1, life: 1 });
+            $("blocked").textContent = ++blocked;
+            const t = new Date().toLocaleTimeString("en-GB", { timeZone: "Asia/Kolkata", hour12: false });
+            $("mini-log").innerHTML = `${t} <span class="x">DROP</span> ${TYPES[(Math.random() * TYPES.length) | 0]}`;
+          }
+        }
+        attacks = attacks.filter((a) => a.t < a.stop + .3);
+        for (const r of ripples) { r.r += .5; r.life -= .035; g.strokeStyle = `rgba(76, 195, 138, ${Math.max(0, r.life)})`; g.beginPath(); g.arc(r.x, r.y, r.r, 0, Math.PI * 2); g.stroke(); }
+        ripples = ripples.filter((r) => r.life > 0);
+        g.strokeStyle = "rgba(76, 195, 138, .7)"; g.setLineDash([2, 3]);
+        g.beginPath(); g.arc(home.x, home.y, 8, 0, Math.PI * 2); g.stroke(); g.setLineDash([]);
+        g.fillStyle = "#4cc38a"; g.beginPath(); g.arc(home.x, home.y, 2, 0, Math.PI * 2); g.fill();
+        if (!reduce) requestAnimationFrame(frame);
+      }
+      addEventListener("resize", layout);
+      layout();
+      requestAnimationFrame(frame);
+    })();
+
+    // ---------- matrix rain ----------
+    const rain = $("rain");
+    let rainTimer = null;
+    function startRain() {
+      if (reduce) return;
+      const g = rain.getContext("2d");
+      rain.width = innerWidth; rain.height = innerHeight;
+      rain.classList.add("on");
+      const fs = 16, cols = Math.ceil(innerWidth / fs);
+      const drops = Array.from({ length: cols }, () => Math.random() * -40);
+      const chars = "アイウエオカキクケコサシスセソ01PRIYANSHU<>/{}#$";
+      const rgb = accRGB();
+      clearInterval(rainTimer);
+      rainTimer = setInterval(() => {
+        g.fillStyle = "rgba(5, 5, 4, 0.12)";
+        g.fillRect(0, 0, rain.width, rain.height);
+        g.font = `${fs}px "JetBrains Mono", monospace`;
+        drops.forEach((y, i) => {
+          g.fillStyle = Math.random() < .04 ? "#fff8ea" : `rgba(${rgb}, .9)`;
+          g.fillText(chars[(Math.random() * chars.length) | 0], i * fs, y * fs);
+          drops[i] = y * fs > rain.height && Math.random() > .975 ? 0 : y + 1;
+        });
+      }, 45);
+      setTimeout(stopRain, 8000);
+    }
+    function stopRain() {
+      if (!rain.classList.contains("on")) return;
+      clearInterval(rainTimer);
+      rain.classList.remove("on");
+      input.focus();
+    }
+    rain.addEventListener("click", stopRain);
+    document.addEventListener("keydown", (e) => { if (rain.classList.contains("on")) { e.preventDefault(); stopRain(); } }, true);
 
     // ---------- boot sequence ----------
+    let initialTheme = "signal";
     try {
       const t = localStorage.getItem("term-theme");
-      if (t && t !== "green") document.body.dataset.theme = t;
+      if (["matrix", "amber", "ice"].includes(t)) initialTheme = t;
     } catch {}
+    setTheme(initialTheme);
 
     const boot = [
-      `<span class="muted">[    0.000000]</span> Initializing secure shell ...`,
-      `<span class="muted">[    0.041337]</span> Loading modules: <span class="acc">osint</span> <span class="acc">easm</span> <span class="acc">vuln-mgmt</span> <span class="acc">threat-intel</span> <span class="acc">ir</span>`,
-      `<span class="muted">[    0.090210]</span> Verifying 8 certificates ............ <span class="acc">[ OK ]</span>`,
-      `<span class="muted">[    0.133700]</span> Mounting /home/priyanshu ............ <span class="acc">[ OK ]</span>`,
-      `<span class="muted">[    0.200000]</span> Establishing encrypted session ...... <span class="acc">[ OK ]</span>`,
+      `<span class="dim">[    0.000000]</span> Initializing secure shell …`,
+      `<span class="dim">[    0.041337]</span> Loading modules: <span class="acc">osint</span> <span class="acc">easm</span> <span class="acc">vuln-mgmt</span> <span class="acc">threat-intel</span> <span class="acc">ir</span>`,
+      `<span class="dim">[    0.090210]</span> Verifying ${R.certifications.length} certificates ………… <span class="ok">[  OK  ]</span>`,
+      `<span class="dim">[    0.133700]</span> Mounting /home/priyanshu ………… <span class="ok">[  OK  ]</span>`,
+      `<span class="dim">[    0.200000]</span> Establishing encrypted session ………… <span class="ok">[  OK  ]</span>`,
     ];
     let skip = false;
     const finishBoot = () => {
       if (inputLine.hidden === false) return;
       out.innerHTML = "";
-      print(bannerHTML());
-      print(`<div class="block">Welcome, guest. You've connected to <span class="b">${esc(R.name)}</span>'s portfolio — <span class="acc">${esc(R.title)}</span>.\n` +
-        `Type ${c("help")} to see available commands, or start with ${c("whoami")}.</div>`);
+      print(neofetch());
+      print(`<span class="muted">Welcome, guest. Type</span> ${c("help")} <span class="muted">to list commands, or start with</span> ${c("whoami")}<span class="muted">.</span>`);
       inputLine.hidden = false;
       input.focus();
     };
@@ -569,9 +884,9 @@
       for (const l of boot) {
         if (skip) break;
         print(l);
-        await new Promise((r) => setTimeout(r, 260));
+        await sleep(240);
       }
-      if (!skip) await new Promise((r) => setTimeout(r, 400));
+      if (!skip) await sleep(350);
       finishBoot();
     })();
   </script>

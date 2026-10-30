@@ -4,163 +4,355 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Priyanshu · Cybersecurity</title>
-  <meta name="description" content="Priyanshu, cybersecurity professional. Choose terminal mode or the classic portfolio." />
+  <meta name="description" content="Priyanshu, cybersecurity professional. Read the briefing or enter the shell." />
   <meta property="og:title" content="Priyanshu · Cybersecurity" />
-  <meta property="og:description" content="Explore my work as a terminal session or a classic portfolio." />
+  <meta property="og:description" content="Read the briefing or enter the shell." />
   <meta property="og:type" content="website" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #070b12;
-      --panel: rgba(13, 20, 32, 0.72);
-      --border: rgba(0, 229, 160, 0.18);
-      --text: #e6edf6;
-      --muted: #8b98ab;
-      --accent: #00e5a0;
-      --accent-rgb: 0, 229, 160;
-      --accent-2: #38bdf8;
+      --paper: #f3efe6;
+      --ink: #16140f;
+      --ink-2: #3d392f;
+      --muted: #767062;
+      --line: rgba(22, 20, 15, 0.14);
+      --signal: #e2462a;
+      --ok: #1d7a52;
+      --ok-dark: #4cc38a;
+      --serif: "Instrument Serif", Georgia, serif;
+      --sans: "IBM Plex Sans", system-ui, sans-serif;
+      --mono: "IBM Plex Mono", ui-monospace, monospace;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; }
-    body {
-      background: radial-gradient(ellipse at 50% 0%, #0d1a2b 0%, var(--bg) 60%);
-      color: var(--text);
-      font-family: Inter, system-ui, sans-serif;
-      overflow: hidden;
-    }
-    #cyber-bg { position: fixed; inset: 0; z-index: 0; }
-    .scanlines {
-      position: fixed; inset: 0; z-index: 1; pointer-events: none;
-      background: repeating-linear-gradient(0deg, rgba(255,255,255,0.015) 0 1px, transparent 1px 3px);
-    }
-    main {
-      position: relative; z-index: 2;
-      min-height: 100%;
-      display: grid; place-items: center;
-      padding: 24px 16px;
-    }
-    .wrap { width: 100%; max-width: 880px; text-align: center; }
-    .badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      font: 500 12px/1 "JetBrains Mono", monospace;
-      color: var(--accent);
-      border: 1px solid var(--border);
-      background: rgba(0, 229, 160, 0.06);
-      padding: 8px 14px; border-radius: 999px;
-      letter-spacing: 0.04em;
-    }
-    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); animation: pulse 1.6s infinite; }
-    @keyframes pulse { 50% { opacity: 0.3; } }
-    h1 {
-      margin-top: 22px;
-      font-size: clamp(44px, 9vw, 92px);
-      font-weight: 800; letter-spacing: -0.03em; line-height: 1;
-    }
-    h1 .glitch { position: relative; display: inline-block; }
-    h1 .glitch::before, h1 .glitch::after {
-      content: attr(data-text); position: absolute; inset: 0; opacity: 0;
-    }
-    h1 .glitch::before { color: var(--accent); animation: glitch 3.5s infinite steps(1); clip-path: inset(0 0 60% 0); }
-    h1 .glitch::after { color: var(--accent-2); animation: glitch 3.5s infinite steps(1) reverse; clip-path: inset(55% 0 0 0); }
-    @keyframes glitch {
-      0%, 92%, 100% { transform: none; opacity: 0; }
-      93% { transform: translate(-4px, 1px); opacity: 0.85; }
-      95% { transform: translate(4px, -1px); opacity: 0.85; }
-      97% { transform: translate(-2px, 2px); opacity: 0.85; }
-    }
-    .role { margin-top: 14px; font: 500 15px/1.5 "JetBrains Mono", monospace; color: var(--muted); min-height: 1.5em; }
-    .role .caret { display: inline-block; width: 8px; background: var(--accent); animation: pulse 1s infinite steps(1); }
-    .q { margin: 48px 0 18px; font-size: 14px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+    body { background: var(--ink); color: var(--ink); font: 16px/1.6 var(--sans); }
+    a { color: inherit; }
+    ::selection { background: var(--signal); color: var(--paper); }
 
-    .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; text-align: left; }
-    @media (max-width: 640px) { .choices { grid-template-columns: 1fr; } body { overflow: auto; } }
-    .choice {
-      display: block; text-decoration: none; color: inherit;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 24px;
-      backdrop-filter: blur(10px);
-      transition: transform .25s, border-color .25s, box-shadow .25s;
-      position: relative; overflow: hidden;
+    .page { min-height: 100%; display: flex; flex-direction: column; }
+
+    .strip { background: var(--ink); color: var(--paper); font: 500 11px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; border-bottom: 1px solid rgba(243, 239, 230, .1); }
+    .strip .in { display: flex; gap: 24px; align-items: center; height: 34px; padding: 0 24px; white-space: nowrap; overflow: hidden; }
+    .strip .live { display: inline-flex; align-items: center; gap: 8px; color: #ffb4a6; }
+    .strip .live i { width: 7px; height: 7px; border-radius: 50%; background: var(--signal); animation: blink 1.4s infinite; }
+    .strip .sp { flex: 1; }
+    @keyframes blink { 50% { opacity: .25; } }
+    @media (max-width: 640px) { .strip .hide-sm { display: none; } .strip .in { padding: 0 16px; } }
+
+    /* ---------- split ---------- */
+    .split { flex: 1; display: flex; position: relative; min-height: 0; }
+    .side {
+      flex: 1; position: relative; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 72px clamp(24px, 5vw, 80px);
+      text-decoration: none;
+      transition: flex-grow .7s cubic-bezier(.2, .7, .1, 1);
+      min-height: 560px;
     }
-    .choice:hover, .choice:focus-visible {
-      transform: translateY(-4px);
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px var(--accent), 0 18px 50px -12px rgba(0, 229, 160, 0.35);
-      outline: none;
+    .split:has(.side:hover) .side:not(:hover) { flex-grow: .8; }
+    .side:hover { flex-grow: 1.25; }
+    .side:focus-visible { outline: 3px solid var(--signal); outline-offset: -3px; }
+
+    .brief {
+      background-color: var(--paper);
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='.06'/></svg>");
+      color: var(--ink);
     }
-    .choice .icon {
-      width: 46px; height: 46px; border-radius: 12px;
-      display: grid; place-items: center;
-      background: rgba(0, 229, 160, 0.1); color: var(--accent);
-      font: 700 18px "JetBrains Mono", monospace;
+    .shell { background: radial-gradient(ellipse at 70% 30%, #221f19 0%, var(--ink) 65%); color: var(--paper); }
+    #brief-map { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .brief::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, var(--paper) 30%, rgba(243, 239, 230, .4) 75%, rgba(243, 239, 230, .1)); }
+    .shell::before { /* faint scanlines */
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background: repeating-linear-gradient(0deg, rgba(255, 255, 255, .025) 0 1px, transparent 1px 3px);
     }
-    .choice.alt .icon { background: rgba(56, 189, 248, 0.1); color: var(--accent-2); }
-    .choice.alt:hover, .choice.alt:focus-visible { border-color: var(--accent-2); box-shadow: 0 0 0 1px var(--accent-2), 0 18px 50px -12px rgba(56, 189, 248, 0.35); }
-    .choice h2 { margin-top: 16px; font-size: 20px; font-weight: 700; }
-    .choice p { margin-top: 6px; color: var(--muted); font-size: 14px; line-height: 1.55; }
-    .choice .go { margin-top: 18px; font: 600 13px "JetBrains Mono", monospace; color: var(--accent); }
-    .choice.alt .go { color: var(--accent-2); }
-    .hint { margin-top: 28px; font: 12px "JetBrains Mono", monospace; color: #5b6778; }
-    kbd { border: 1px solid #2a3546; border-bottom-width: 2px; border-radius: 4px; padding: 1px 6px; color: var(--muted); }
+    .content { position: relative; z-index: 2; max-width: 520px; }
+    .shell .content { margin-left: auto; width: 100%; }
+
+    .opt { font: 500 12px var(--mono); letter-spacing: .12em; text-transform: uppercase; display: flex; gap: 10px; align-items: center; }
+    .brief .opt { color: var(--muted); }
+    .shell .opt { color: rgba(243, 239, 230, .55); }
+    .opt b { color: var(--signal); font-weight: 600; }
+    .side h2 { margin-top: 16px; font: 400 clamp(52px, 7vw, 104px)/.92 var(--serif); letter-spacing: -.03em; }
+    .side h2 em { color: var(--signal); }
+    .side p.desc { margin-top: 18px; max-width: 420px; }
+    .brief p.desc { color: var(--ink-2); }
+    .shell p.desc { color: rgba(243, 239, 230, .72); }
+    .shell code { font: 14px var(--mono); color: var(--paper); background: rgba(243, 239, 230, .1); padding: 1px 6px; border-radius: 4px; }
+
+    .go { margin-top: 32px; display: inline-flex; align-items: center; gap: 14px; }
+    .go .btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 13px 22px; border-radius: 999px; font: 500 15px var(--sans);
+      transition: background .2s, color .2s, transform .2s;
+    }
+    .brief .btn { background: var(--ink); color: var(--paper); }
+    .brief:hover .btn { background: var(--signal); transform: translateX(4px); }
+    .shell .btn { background: var(--paper); color: var(--ink); font-family: var(--mono); font-size: 14px; }
+    .shell:hover .btn { background: var(--signal); color: var(--paper); transform: translateX(4px); }
+    kbd { font: 500 12px var(--mono); border: 1px solid currentColor; border-bottom-width: 2px; border-radius: 6px; padding: 2px 8px; opacity: .6; }
+
+    /* live terminal preview */
+    .preview {
+      margin-top: 32px; background: #0b0a08; border: 1px solid rgba(243, 239, 230, .14); border-radius: 12px;
+      box-shadow: 0 30px 60px -25px rgba(0, 0, 0, .8);
+      overflow: hidden; max-width: 480px;
+      transition: transform .5s cubic-bezier(.2, .7, .1, 1);
+    }
+    .shell:hover .preview { transform: translateY(-4px) rotate(-.4deg); }
+    .preview .bar { display: flex; align-items: center; gap: 7px; padding: 10px 12px; border-bottom: 1px solid rgba(243, 239, 230, .08); font: 11px var(--mono); color: rgba(243, 239, 230, .4); }
+    .preview .bar i { width: 10px; height: 10px; border-radius: 50%; background: #3a362d; }
+    .preview .bar i:first-child { background: var(--signal); }
+    .preview .bar span { margin-left: 8px; }
+    .preview pre { padding: 14px 16px 16px; height: 168px; overflow: hidden; font: 13px/1.6 var(--mono); color: #e9e3d6; white-space: pre-wrap; }
+    .preview .p { color: var(--signal); }
+    .preview .m { color: rgba(243, 239, 230, .5); }
+    .preview .g { color: var(--ok-dark); }
+    .preview .cur { display: inline-block; width: 8px; height: 15px; background: var(--signal); vertical-align: -2px; animation: blink 1s steps(1) infinite; }
+
+    /* counter card on the briefing side */
+    .mini {
+      margin-top: 32px; max-width: 420px; display: flex; gap: 18px; align-items: center;
+      padding: 14px 18px; background: rgba(250, 248, 243, .85); border: 1px solid var(--line); border-radius: 12px;
+      font: 12px var(--mono); color: var(--ink-2); backdrop-filter: blur(4px);
+    }
+    .mini b { font: 400 30px/1 var(--serif); color: var(--ok); min-width: 1.2em; }
+
+    /* center seal */
+    .seal {
+      position: absolute; z-index: 5; left: 50%; top: 50%;
+      width: 156px; height: 156px; margin: -78px 0 0 -78px;
+      border-radius: 50%; background: var(--paper); border: 1px solid var(--ink);
+      display: grid; place-items: center; pointer-events: none;
+      box-shadow: 0 0 0 8px rgba(22, 20, 15, .08), 0 20px 40px -10px rgba(0, 0, 0, .5);
+      transition: left .7s cubic-bezier(.2, .7, .1, 1);
+    }
+    .seal svg { position: absolute; inset: 0; animation: spin 24s linear infinite; }
+    .seal text { font: 500 11.5px var(--mono); letter-spacing: 3.2px; fill: var(--ink); }
+    .seal .p { font: 400 64px/1 var(--serif); color: var(--ink); }
+    .seal .p::after { content: "."; color: var(--signal); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .split:has(.brief:hover) .seal { left: 55.5%; }
+    .split:has(.shell:hover) .seal { left: 44.5%; }
+
+    @media (max-width: 860px) {
+      .split { flex-direction: column; }
+      .side { min-height: auto; padding: 64px 20px 80px; }
+      .split:has(.side:hover) .side:not(:hover), .side:hover { flex-grow: 1; }
+      .shell { padding-top: 88px; }
+      .shell .content { margin-left: 0; }
+      .seal { width: 120px; height: 120px; margin: -60px 0 0 -60px; top: var(--seal-y, 50%); left: 50% !important; }
+      .seal .p { font-size: 48px; }
+      .seal text { font-size: 9px; letter-spacing: 2.4px; }
+      .brief::before { background: linear-gradient(180deg, rgba(243, 239, 230, .6), var(--paper) 75%); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .seal svg, .strip .live i, .preview .cur { animation: none; }
+      .side, .seal, .preview { transition: none; }
+    }
   </style>
 </head>
 <body>
-  <canvas id="cyber-bg" aria-hidden="true"></canvas>
-  <div class="scanlines" aria-hidden="true"></div>
-
-  <main>
-    <div class="wrap">
-      <span class="badge"><span class="dot"></span> SECURE CONNECTION ESTABLISHED</span>
-      <h1><span class="glitch" data-text="Priyanshu">Priyanshu</span></h1>
-      <p class="role"><span id="typed"></span><span class="caret">&nbsp;</span></p>
-
-      <p class="q">How would you like to explore?</p>
-      <div class="choices">
-        <a class="choice" href="terminal.html">
-          <div class="icon">&gt;_</div>
-          <h2>I speak terminal</h2>
-          <p>Drop into a shell. Type commands like <code>whoami</code>, <code>experience</code> and <code>projects</code> to pull my details.</p>
-          <div class="go">$ ./enter --mode=techie →</div>
-        </a>
-        <a class="choice alt" href="portfolio.html">
-          <div class="icon">◉</div>
-          <h2>Just show me</h2>
-          <p>A clean, scroll-through portfolio in plain language: what I do, where I've worked and how to reach me.</p>
-          <div class="go">Open portfolio →</div>
-        </a>
+  <div class="page">
+    <div class="strip">
+      <div class="in">
+        <span class="live"><i></i> Secure channel</span>
+        <span class="hide-sm">Choose your access method</span>
+        <span class="sp"></span>
+        <span>HYD <span id="clock">--:--:--</span> IST</span>
       </div>
-      <p class="hint">Press <kbd>T</kbd> for terminal · <kbd>P</kbd> for portfolio</p>
     </div>
-  </main>
 
+    <main class="split" id="split">
+      <a class="side brief" href="portfolio.html" aria-label="Read the briefing: plain-language portfolio">
+        <canvas id="brief-map" aria-hidden="true"></canvas>
+        <div class="content">
+          <p class="opt"><b>A</b> For everyone</p>
+          <h2>Read the<br /><em>briefing.</em></h2>
+          <p class="desc">Who I am, what I protect and where I've worked, in plain English. No jargon required.</p>
+          <div class="mini"><b id="mini-count">0</b><span>threats intercepted on the map while you decide. Simulated, but you get the idea.</span></div>
+          <div class="go"><span class="btn">Open the briefing →</span><kbd>B</kbd></div>
+        </div>
+      </a>
+
+      <a class="side shell" href="terminal.html" aria-label="Enter the shell: interactive terminal portfolio">
+        <div class="content">
+          <p class="opt"><b>B</b> For techies</p>
+          <h2>Enter the<br /><em>shell.</em></h2>
+          <p class="desc">An interactive terminal. Type commands to pull my record, run scans, or try your luck with <code>sudo</code>.</p>
+          <div class="preview" aria-hidden="true">
+            <div class="bar"><i></i><i></i><i></i><span>guest@priyanshu — ssh</span></div>
+            <pre id="preview"></pre>
+          </div>
+          <div class="go"><span class="btn">$ ssh guest@priyanshu</span><kbd>T</kbd></div>
+        </div>
+      </a>
+
+      <div class="seal" id="seal" aria-hidden="true">
+        <svg viewBox="0 0 156 156">
+          <defs><path id="ring" d="M78,78 m-60,0 a60,60 0 1,1 120,0 a60,60 0 1,1 -120,0" /></defs>
+          <text><textPath href="#ring">PRIYANSHU · CYBERSECURITY · HYDERABAD ·</textPath></text>
+        </svg>
+        <span class="p">P</span>
+      </div>
+    </main>
+  </div>
+
+  <script src="assets/world.js"></script>
   <script>
-    const roles = [
-      "Information Security Analyst",
-      "Attack Surface Management",
-      "Threat Intelligence · OSINT",
-      "Vulnerability Management",
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // ---------- clock ----------
+    const clock = document.getElementById("clock");
+    const tick = () => (clock.textContent = new Date().toLocaleTimeString("en-GB", { timeZone: "Asia/Kolkata", hour12: false }));
+    tick(); setInterval(tick, 1000);
+
+    // ---------- keys ----------
+    document.addEventListener("keydown", (e) => {
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      const k = e.key.toLowerCase();
+      if (k === "b" || k === "a" || k === "p") location.href = "portfolio.html";
+      if (k === "t") location.href = "terminal.html";
+    });
+
+    // Keep the seal on the seam when the panels stack on phones.
+    const seal = document.getElementById("seal");
+    const brief = document.querySelector(".brief");
+    function placeSeal() {
+      if (innerWidth > 860) seal.style.removeProperty("--seal-y");
+      else seal.style.setProperty("--seal-y", `${brief.offsetHeight}px`);
+    }
+    addEventListener("resize", placeSeal);
+    placeSeal();
+
+    // ---------- live terminal preview ----------
+    const SCRIPT = [
+      ["whoami", '<span class="m">Priyanshu — Info Security Analyst @ Bank of America</span>'],
+      ["certs | wc -l", '<span class="g">8</span> <span class="m">verified</span>'],
+      ["nmap priyanshu", '<span class="m">8080/tcp</span> <span class="g">open</span> <span class="m">new-opportunities</span>'],
+      ["sudo hire priyanshu", '<span class="g">[✓]</span> <span class="m">MATCH FOUND: 100% compatibility</span>'],
     ];
-    const el = document.getElementById("typed");
-    let r = 0, i = 0, deleting = false;
-    (function type() {
-      const word = roles[r];
-      el.textContent = word.slice(0, i);
-      if (!deleting && i < word.length) i++;
-      else if (deleting && i > 0) i--;
-      else if (!deleting) { deleting = true; return setTimeout(type, 1600); }
-      else { deleting = false; r = (r + 1) % roles.length; }
-      setTimeout(type, deleting ? 35 : 70);
+    const pre = document.getElementById("preview");
+    const PROMPT = '<span class="p">❯</span> ';
+    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+    (async function play() {
+      let html = "";
+      for (;;) {
+        for (const [cmd, outp] of SCRIPT) {
+          for (let i = 0; i <= cmd.length; i++) {
+            pre.innerHTML = html + PROMPT + cmd.slice(0, i) + '<span class="cur"></span>';
+            await sleep(reduce ? 0 : 55 + Math.random() * 50);
+          }
+          await sleep(350);
+          html += PROMPT + cmd + "\n" + outp + "\n";
+          // Keep only the last few lines, like a scrolling terminal.
+          const lines = html.split("\n");
+          if (lines.length > 7) html = lines.slice(-7).join("\n");
+          pre.innerHTML = html + PROMPT + '<span class="cur"></span>';
+          await sleep(1100);
+        }
+      }
     })();
 
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "t" || e.key === "T") location.href = "terminal.html";
-      if (e.key === "p" || e.key === "P") location.href = "portfolio.html";
-    });
+    // ---------- briefing-side map ----------
+    (function map() {
+      const W = window.WORLD;
+      const canvas = document.getElementById("brief-map");
+      const ctx = canvas.getContext("2d");
+      const counter = document.getElementById("mini-count");
+      const HOME = { lon: 78.47, lat: 17.38 };
+      const SHIELD = 18;
+      const land = [];
+      W.grid.forEach((hex, r) => {
+        const bits = BigInt("0x" + hex).toString(2).padStart(W.cols, "0");
+        for (let c = 0; c < W.cols; c++) if (bits[c] === "1") land.push({ c, r });
+      });
+      const ratio = ((W.lat0 - W.lat1) / W.rows) / (360 / W.cols);
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      let w, h, cell, cellH, ox, oy, home, dots, attacks = [], ripples = [], blocked = 0, last = 0;
+
+      const pos = (c, r) => ({ x: ox + (c + 0.5) * cell, y: oy + (r + 0.5) * cellH });
+
+      function layout() {
+        w = canvas.clientWidth; h = canvas.clientHeight;
+        if (!w || !h) return;
+        canvas.width = w * dpr; canvas.height = h * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        cell = Math.max((w * 1.5) / W.cols, (h * 1.05) / (W.rows * ratio));
+        cellH = cell * ratio;
+        const hc = ((HOME.lon + 180) / 360) * W.cols, hr = ((W.lat0 - HOME.lat) / (W.lat0 - W.lat1)) * W.rows;
+        // Park Hyderabad in the open space above the headline, clear of the seal.
+        ox = w * 0.62 - hc * cell;
+        oy = h * 0.2 - hr * cellH;
+        home = { x: ox + hc * cell, y: oy + hr * cellH };
+        attacks = []; ripples = [];
+        dots = document.createElement("canvas");
+        dots.width = w * dpr; dots.height = h * dpr;
+        const d = dots.getContext("2d");
+        d.setTransform(dpr, 0, 0, dpr, 0, 0);
+        d.fillStyle = "rgba(22, 20, 15, 0.28)";
+        const rad = Math.max(1, cell * 0.17);
+        for (const p of land) {
+          const { x, y } = pos(p.c, p.r);
+          if (x < -cell || x > w + cell || y < -cell || y > h + cell) continue;
+          d.beginPath(); d.arc(x, y, rad, 0, Math.PI * 2); d.fill();
+        }
+      }
+
+      function launch() {
+        const p = land[(Math.random() * land.length) | 0];
+        const from = pos(p.c, p.r);
+        const dist = Math.hypot(home.x - from.x, home.y - from.y);
+        if (dist < 80) return;
+        attacks.push({ from, ctrl: { x: (from.x + home.x) / 2, y: Math.min(from.y, home.y) - dist * 0.35 }, t: 0, speed: 0.008 + Math.random() * 0.006, stop: 1 - SHIELD / dist });
+      }
+      const at = (a, t) => {
+        const u = 1 - t;
+        return { x: u * u * a.from.x + 2 * u * t * a.ctrl.x + t * t * home.x, y: u * u * a.from.y + 2 * u * t * a.ctrl.y + t * t * home.y };
+      };
+
+      function frame(now) {
+        if (!dots) return requestAnimationFrame(frame);
+        ctx.clearRect(0, 0, w, h);
+        ctx.drawImage(dots, 0, 0, w, h);
+        if (!reduce && now - last > 700) { launch(); last = now; }
+        for (const a of attacks) {
+          a.t += a.speed;
+          const head = Math.min(a.t, a.stop), tail = Math.max(0, Math.min(a.t, a.stop + 0.3) - 0.28);
+          if (tail < head) {
+            ctx.beginPath();
+            for (let s = 0; s <= 20; s++) {
+              const p = at(a, tail + ((head - tail) * s) / 20);
+              s ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y);
+            }
+            ctx.strokeStyle = "rgba(226, 70, 42, 0.75)"; ctx.lineWidth = 1.4; ctx.stroke();
+          }
+          if (a.t >= a.stop && !a.done) {
+            a.done = true;
+            const p = at(a, a.stop);
+            ripples.push({ x: p.x, y: p.y, r: 2, life: 1 });
+            counter.textContent = ++blocked;
+          }
+        }
+        attacks = attacks.filter((a) => a.t < a.stop + 0.3);
+        ctx.strokeStyle = "rgba(29, 122, 82, 0.6)"; ctx.setLineDash([3, 4]); ctx.lineWidth = 1.4;
+        ctx.beginPath(); ctx.arc(home.x, home.y, SHIELD, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
+        for (const r of ripples) {
+          r.r += 0.7; r.life -= 0.03;
+          ctx.strokeStyle = `rgba(29, 122, 82, ${Math.max(0, r.life)})`;
+          ctx.beginPath(); ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2); ctx.stroke();
+        }
+        ripples = ripples.filter((r) => r.life > 0);
+        ctx.fillStyle = "#16140f"; ctx.beginPath(); ctx.arc(home.x, home.y, 3.5, 0, Math.PI * 2); ctx.fill();
+        if (!reduce) requestAnimationFrame(frame);
+      }
+      // The panel widens on hover, so re-measure whenever the canvas changes size.
+      if ("ResizeObserver" in window) new ResizeObserver(() => { layout(); if (reduce) frame(0); }).observe(canvas);
+      else addEventListener("resize", layout);
+      layout();
+      requestAnimationFrame(frame);
+    })();
   </script>
-  <script src="assets/bg.js"></script>
 </body>
 </html>
