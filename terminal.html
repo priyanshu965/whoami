@@ -312,6 +312,7 @@
       "education.md": "education",
       "contact.txt": "contact",
       "resume.pdf": "resume",
+      "photo.jpg": "photo",
     };
 
     function neofetch() {
@@ -448,6 +449,12 @@
             `<a class="b" href="${esc(w.url)}" target="_blank" rel="noopener">${esc(w.title)}</a>\n${tags(w.tags || [])}\n<span class="muted">${esc(w.summary)}</span></div>`
           ).join("") + `</div>`;
         },
+      },
+      photo: {
+        desc: "put a face to the name",
+        run: () =>
+          `<div class="box" style="padding:10px"><img src="assets/priyanshu-offduty.jpg" alt="Priyanshu smiling on a bridge with snow-capped mountains behind" style="display:block; width:min(240px, 60vw); border-radius:6px" />` +
+          `<div class="muted" style="margin-top:6px">photo.jpg · 960×1200 · off duty, metadata stripped</div></div>`,
       },
       interests: {
         desc: "life outside the SOC",
